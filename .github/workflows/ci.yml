@@ -1,0 +1,61 @@
+name: Validate NurturePath
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: nurturepath
+          POSTGRES_PASSWORD: ci_synthetic_only
+          POSTGRES_DB: nurturepath
+        ports: [5432:5432]
+        options: >-
+          --health-cmd "pg_isready -U nurturepath"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://nurturepath:ci_synthetic_only@localhost:5432/nurturepath
+      CONTACT_ENCRYPTION_KEY: '1111111111111111111111111111111111111111111111111111111111111111'
+      AUTH_SECRET: ci-demo-only-not-for-production-000000000000
+      APP_URL: http://localhost:3200
+      DEMO_MODE: 'true'
+      DEMO_PASSWORD: CiSyntheticDemo!2026
+      MESSAGE_PROVIDER: simulator
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npm run db:migrate
+      - run: npm run db:seed
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm audit --omit=dev --audit-level=high
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: verification-artifacts
+          path: |
+            test-results/
+            playwright-report/
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

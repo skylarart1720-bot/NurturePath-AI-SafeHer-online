@@ -1,0 +1,13 @@
+{
+  "synthetic": true,
+  "environment": "localhost",
+  "requests": 100,
+  "concurrency": 5,
+  "path": "/api/mothers",
+  "failures": 0,
+  "p50Ms": 485,
+  "p95Ms": 1036,
+  "maxMs": 3225,
+  "elapsedMs": 12722,
+  "limits": "Local synthetic standalone benchmark only, not a production capacity or availability claim. p95 exceeds the 800 ms target."
+}

@@ -1,0 +1,14 @@
+Category,Vendor,Approved region,Quote date,Currency,Monthly fixed quote,Usage quote,Owner,Status
+Domain and DNS,,,,,,,,Quote pending
+Application compute,,,,,,,,Quote pending
+Managed database and PITR,,,,,,,,Quote pending
+SMS and WhatsApp,,,,,,,,Provider and contracts pending
+Email recovery,,,,,,,,Provider and contracts pending
+Monitoring and audit vault,,,,,,,,Owner and quote pending
+Managed key storage,,,,,,,,Vendor and region approval pending
+Backup vault,,,,,,,,Quote pending
+Security assessment,,,,,,,,Scope and quote pending
+Clinical and translation review,,,,,,,,Reviewer and quote pending
+Legal and privacy review,,,,,,,,Counsel and quote pending
+Accessibility review,,,,,,,,Scope and quote pending
+Operational support,,,,,,,,Owner and quote pending

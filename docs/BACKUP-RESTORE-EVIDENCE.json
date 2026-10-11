@@ -1,0 +1,20 @@
+{
+  "synthetic": true,
+  "source": "local nurturepath",
+  "target": "np_restore_1791692953667",
+  "encryptedBackup": "backups/demo-1791692953660.npbackup",
+  "sha256": "bd6fff52920be2af41089ed30fb5a0675ce8810b88978b8ecb4423d5550c1c11",
+  "tableCounts": [
+    "Appointment|20",
+    "Clinic|2",
+    "Consent|40",
+    "FollowUp|20",
+    "Mother|20",
+    "Organization|1",
+    "Referral|7",
+    "User|6"
+  ],
+  "elapsedMs": 15436,
+  "result": "PASS",
+  "limits": "Local synthetic restore only; not managed PITR or production RPO/RTO proof."
+}

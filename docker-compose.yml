@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:5442:5432'
+    environment:
+      POSTGRES_USER: nurturepath
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local_demo_only}
+      POSTGRES_DB: nurturepath
+    volumes:
+      - nurturepath_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nurturepath -d nurturepath']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+volumes:
+  nurturepath_data:

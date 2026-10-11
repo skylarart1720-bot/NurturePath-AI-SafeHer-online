@@ -1,0 +1,207 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+enum Role {
+  PLATFORM_ADMIN
+  CLINIC_ADMIN
+  HEALTH_WORKER
+  AUDITOR
+}
+enum ReferralStatus {
+  CREATED
+  ACCEPTED
+  ATTENDED
+  CLOSED
+  UNABLE_TO_CONTACT
+}
+model Organization {
+  id String @id @default(uuid())
+  name String
+  country String @default("GH")
+  createdAt DateTime @default(now())
+  clinics Clinic[]
+  users User[]
+  mothers Mother[]
+}
+model Clinic {
+  id String @id @default(uuid())
+  organizationId String
+  organization Organization @relation(fields: [organizationId], references: [id])
+  name String
+  region String
+  users User[]
+  mothers Mother[]
+  appointments Appointment[]
+  @@index([organizationId])
+}
+model User {
+  id String @id @default(uuid())
+  organizationId String
+  organization Organization @relation(fields: [organizationId], references: [id])
+  clinicId String?
+  clinic Clinic? @relation(fields: [clinicId], references: [id])
+  role Role
+  name String
+  email String @unique
+  passwordHash String
+  status String @default("ACTIVE")
+  sessionVersion Int @default(1)
+  mfaSecretEncrypted String?
+  mfaEnabled Boolean @default(false)
+  mfaLastCounter Int?
+  assignedMothers Mother[]
+  sessions Session[]
+  resetTokens PasswordReset[]
+  @@index([organizationId, clinicId])
+}
+model Session {
+  id String @id
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  @@index([expiresAt])
+}
+model PasswordReset {
+  id String @id
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt DateTime?
+}
+model Mother {
+  id String @id @default(uuid())
+  organizationId String
+  organization Organization @relation(fields: [organizationId], references: [id])
+  clinicId String
+  clinic Clinic @relation(fields: [clinicId], references: [id])
+  assignedWorkerId String
+  assignedWorker User @relation(fields: [assignedWorkerId], references: [id])
+  displayCode String @unique
+  name String
+  phoneEncrypted String?
+  preferredLanguage String @default("en")
+  careStage String
+  adultConfirmed Boolean
+  estimatedDueDate DateTime?
+  birthDate DateTime?
+  createdAt DateTime @default(now())
+  archivedAt DateTime?
+  version Int @default(1)
+  consents Consent[]
+  appointments Appointment[]
+  followups FollowUp[]
+  referrals Referral[]
+  deliveries MessageDelivery[]
+  @@index([organizationId, clinicId, assignedWorkerId, archivedAt])
+}
+model Consent {
+  id String @id @default(uuid())
+  motherId String
+  mother Mother @relation(fields: [motherId], references: [id])
+  purpose String
+  channel String
+  version String @default("2026-10-v1")
+  grantedAt DateTime @default(now())
+  withdrawnAt DateTime?
+  recordedBy String
+  @@unique([motherId, purpose, channel])
+}
+model Appointment {
+  id String @id @default(uuid())
+  motherId String
+  mother Mother @relation(fields: [motherId], references: [id])
+  clinicId String
+  clinic Clinic @relation(fields: [clinicId], references: [id])
+  scheduledAt DateTime
+  status String @default("SCHEDULED")
+  kind String @default("ANTENATAL")
+  createdBy String
+  version Int @default(1)
+  followups FollowUp[]
+  @@index([clinicId, scheduledAt, status])
+}
+model FollowUp {
+  id String @id @default(uuid())
+  motherId String
+  mother Mother @relation(fields: [motherId], references: [id])
+  appointmentId String?
+  appointment Appointment? @relation(fields: [appointmentId], references: [id])
+  dueAt DateTime
+  status String @default("PENDING")
+  outcome String?
+  assignedTo String
+  completedAt DateTime?
+  @@index([assignedTo, status, dueAt])
+}
+model Referral {
+  id String @id @default(uuid())
+  motherId String
+  mother Mother @relation(fields: [motherId], references: [id])
+  clinicId String
+  receivingFacility String
+  reasonCode String
+  status ReferralStatus @default(CREATED)
+  urgency String @default("ROUTINE")
+  createdAt DateTime @default(now())
+  closedAt DateTime?
+  closureNotes String?
+  version Int @default(1)
+  @@index([clinicId, status])
+}
+model MessageTemplate {
+  id String @id @default(uuid())
+  organizationId String
+  locale String
+  category String
+  title String
+  approvedBy String?
+  approvedAt DateTime?
+  body String
+  version Int @default(1)
+  sourceId String?
+  modelVersion String?
+  deliveries MessageDelivery[]
+  @@index([organizationId, locale, approvedAt])
+}
+model MessageDelivery {
+  id String @id @default(uuid())
+  motherId String
+  mother Mother @relation(fields: [motherId], references: [id])
+  templateId String
+  template MessageTemplate @relation(fields: [templateId], references: [id])
+  channel String
+  status String
+  providerId String?
+  createdAt DateTime @default(now())
+  @@index([motherId, createdAt])
+}
+model AuditEvent {
+  id String @id @default(uuid())
+  actorId String
+  organizationId String
+  clinicId String?
+  entityType String
+  entityId String
+  action String
+  timestamp DateTime @default(now())
+  metadataRedacted Json @default("{}")
+  @@index([organizationId, clinicId, timestamp])
+}
+model OfflineMutation {
+  idempotencyKey String @id
+  deviceId String
+  actorId String
+  mutationType String
+  payloadHash String
+  result Json
+  processedAt DateTime @default(now())
+}
+model RateLimit {
+  key String @id
+  count Int @default(1)
+  expiresAt DateTime
+}
