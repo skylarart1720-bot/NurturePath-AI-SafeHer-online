@@ -14,7 +14,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { width: 'device-width', initialScale: 1, themeColor: '#087E83' };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    // Browser extensions can add attributes to this element before React hydrates.
+    <html lang="en" suppressHydrationWarning>
       <body>
         <a className="skip-link" href="#main">
           Skip to content
