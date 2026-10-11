@@ -1,0 +1,856 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>NurturePath AI — User and completion guide</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #183047;
+        background: #fff;
+        font-size: 10.4pt;
+        line-height: 1.48;
+      }
+      .page {
+        break-after: page;
+        max-width: 178mm;
+        margin: auto;
+      }
+      .page:last-child {
+        break-after: auto;
+      }
+      h1 {
+        font-size: 38pt;
+        line-height: 1.08;
+        letter-spacing: -1.5px;
+        margin: 20px 0;
+      }
+      h2 {
+        font-size: 23pt;
+        line-height: 1.2;
+        margin: 10px 0 18px;
+      }
+      h3 {
+        font-size: 13pt;
+        color: #087e83;
+        margin: 18px 0 6px;
+      }
+      p {
+        margin: 8px 0;
+      }
+      li {
+        margin: 6px 0;
+      }
+      ul,
+      ol {
+        padding-left: 21px;
+      }
+      a {
+        color: #087e83;
+        text-decoration: none;
+      }
+      .eyebrow {
+        font-size: 9pt;
+        font-weight: bold;
+        color: #087e83;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+      }
+      .subtitle {
+        font-size: 16pt;
+        color: #536576;
+      }
+      .box {
+        background: #edf8f5;
+        border-left: 4px solid #087e83;
+        padding: 12px 16px;
+        margin: 15px 0;
+        border-radius: 0 8px 8px 0;
+      }
+      .note {
+        background: #fff7e9;
+        border-left-color: #b77913;
+      }
+      .small {
+        font-size: 9pt;
+        color: #536576;
+      }
+      .tag {
+        display: inline-block;
+        background: #087e83;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 18px;
+        font-size: 9pt;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0;
+        font-size: 9.2pt;
+      }
+      td,
+      th {
+        text-align: left;
+        vertical-align: top;
+        padding: 9px;
+        border-bottom: 1px solid #dbe5e9;
+      }
+      th {
+        background: #183047;
+        color: #fff;
+      }
+      tr {
+        break-inside: avoid;
+      }
+      code {
+        font-family: Consolas, monospace;
+        font-size: 9pt;
+        background: #eff3f6;
+        padding: 2px 4px;
+      }
+      pre {
+        background: #183047;
+        color: #e8f8f6;
+        padding: 14px;
+        border-radius: 8px;
+        white-space: pre-wrap;
+        font-size: 9pt;
+        line-height: 1.5;
+        break-inside: avoid;
+      }
+      pre code {
+        background: none;
+        color: inherit;
+        padding: 0;
+      }
+      .cover {
+        padding-top: 28mm;
+      }
+      .cover img {
+        width: 230px;
+        margin-bottom: 24px;
+      }
+      .rule {
+        height: 4px;
+        width: 60px;
+        background: #087e83;
+        margin: 25px 0;
+      }
+      .screenshot {
+        width: 100%;
+        border: 1px solid #dbe5e9;
+        border-radius: 8px;
+        margin: 10px 0;
+      }
+      .step {
+        break-inside: avoid;
+      }
+      @media screen {
+        body {
+          background: #edf2f5;
+          padding: 30px;
+        }
+        .page {
+          background: white;
+          padding: 28px;
+          margin-bottom: 30px;
+          min-height: 980px;
+          max-width: 800px;
+        }
+        .cover {
+          padding-top: 100px;
+        }
+      }
+      @media print {
+        .page:last-child {
+          font-size: 9.5pt;
+          line-height: 1.35;
+        }
+        .page:last-child h3 {
+          margin-top: 12px;
+        }
+        .page:last-child td {
+          padding: 6px;
+        }
+        .page:last-child pre {
+          padding: 10px;
+          margin: 8px 0;
+          line-height: 1.35;
+        }
+        .page {
+          min-height: 0;
+        }
+        h2,
+        h3 {
+          break-after: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="page cover">
+      <img src="../public/brand/logo.svg" alt="NurturePath AI" />
+      <div class="eyebrow">User guide + completion roadmap</div>
+      <h1>Care that follows<br />her home.</h1>
+      <p class="subtitle">
+        What has been built. What you can do.<br />What remains. How to finish it.
+      </p>
+      <div class="rule"></div>
+      <p><span class="tag">Working local MVP</span></p>
+      <p>
+        NurturePath AI helps workers and clinics coordinate maternal follow-up: enrolment with
+        consent, appointments, contact outcomes and referrals that are tracked through closure.
+      </p>
+      <div class="box note">
+        <strong>Current operating boundary</strong><br />This release is for fictional adult records
+        and simulated reminders. Real-patient onboarding is blocked. Clinical, legal, partner,
+        security, operations and pilot approvals remain pending.
+      </div>
+      <p class="small">
+        Prepared 10 October 2026 • Based on the three supplied project PDFs, implemented screens and
+        recorded verification. Includes the browser-extension hydration fix.
+      </p>
+      <h3>Inside this guide</h3>
+      <p>
+        2 — Start and sign in<br />3 — Worker care workflow<br />4 — Other roles, messages and
+        security<br />5 — Offline use<br />6 — Completed work and evidence<br />7 — Remaining
+        engineering and deployment<br />8 — Production approvals and pilot<br />9 — Maintenance,
+        troubleshooting and handover
+      </p>
+    </section>
+
+    <section class="page">
+      <div class="eyebrow">01 / Start here</div>
+      <h2>Open your working demo</h2>
+      <p>
+        On this computer, open <a href="http://localhost:3200">http://localhost:3200</a>. The app
+        was started locally; if it has stopped, open PowerShell in the project folder and run:
+      </p>
+      <pre><code>docker compose up -d db
+npm run dev</code></pre>
+      <p>
+        Leave that terminal running. Press <code>Ctrl+C</code> there to stop the app. The database
+        can remain running. Ports 3000 and 3100 belong to other applications; this project uses
+        3200.
+      </p>
+      <h3>Demo accounts</h3>
+      <p>
+        All accounts below use <strong>NurtureDemo!2026</strong> in the generated local setup. If
+        your environment was customized, use its configured <code>DEMO_PASSWORD</code>.
+      </p>
+      <table>
+        <tr>
+          <th>Email</th>
+          <th>What it lets you explore</th>
+        </tr>
+        <tr>
+          <td>worker@demo.nurturepath.test</td>
+          <td>Assigned Adenta records and care workflows</td>
+        </tr>
+        <tr>
+          <td>clinic@demo.nurturepath.test</td>
+          <td>Adenta clinic coordination, assignments and metrics</td>
+        </tr>
+        <tr>
+          <td>admin@demo.nurturepath.test</td>
+          <td>Facilities, access and programme aggregates</td>
+        </tr>
+        <tr>
+          <td>auditor@demo.nurturepath.test</td>
+          <td>Audit metadata and suppressed aggregates</td>
+        </tr>
+        <tr>
+          <td>worker2@demo.nurturepath.test</td>
+          <td>Assigned Tamale records; scope comparison</td>
+        </tr>
+        <tr>
+          <td>colleague@demo.nurturepath.test</td>
+          <td>Adenta worker with no initial assignments</td>
+        </tr>
+      </table>
+      <p class="small">
+        These credentials are deliberately for the local fictional demo. Use unique private
+        credentials if hosting a synthetic evaluation environment.
+      </p>
+      <h3>First setup on another computer</h3>
+      <p>
+        Install Node.js 24 and Docker Desktop with Linux containers. Copy the project source; keep
+        keys and private environment files out of shared source archives.
+      </p>
+      <pre><code>npm ci
+node scripts/setup-local.mjs
+docker compose up -d db
+npm run db:generate
+npm run db:migrate
+npm run db:seed
+npm run dev</code></pre>
+      <p>
+        The setup script preserves an existing <code>.env</code>. The seed is idempotent and
+        supplies two clinics, six demo users and twenty fictional mothers. Verify
+        <code>http://localhost:3200/api/health</code> returns status <code>ok</code>.
+      </p>
+    </section>
+
+    <section class="page">
+      <div class="eyebrow">02 / Daily worker workflow</div>
+      <h2>Take a record through the care loop</h2>
+      <p>
+        Sign in with the worker account. On a phone, use the navigation menu to reach all sections.
+        This walkthrough uses invented adult details only.
+      </p>
+      <div class="step">
+        <h3>1. Register a fictional adult</h3>
+        <p>
+          Use the enrolment action and complete the three-step registration form. Enter the
+          fictional person's details, review the consent step, choose optional SMS/WhatsApp
+          permissions, and submit. Confirm the record appears in <strong>Mothers</strong>. Essential
+          enrolment consent and optional reminder consent are separate.
+        </p>
+      </div>
+      <div class="step">
+        <h3>2. Schedule an appointment</h3>
+        <p>
+          Open the mother's record, enter the visit date and appointment details, then save.
+          Scheduling creates a follow-up task automatically. Use <strong>Appointments</strong> to
+          review planned visits.
+        </p>
+      </div>
+      <div class="step">
+        <h3>3. Record the contact outcome</h3>
+        <p>
+          Open <strong>Follow-ups</strong> or the record's follow-up controls. Record reached, no
+          answer, rescheduled or declined. For no answer and rescheduled, supply the next action
+          date. Save and verify the updated task status.
+        </p>
+      </div>
+      <div class="step">
+        <h3>4. Track a referral to closure</h3>
+        <p>
+          Create a referral from the mother's record. Use the permitted status actions to record
+          acceptance and attendance, then close it with a coordination note. Each transition is
+          validated and audited; closure should represent a confirmed coordination outcome in the
+          demo.
+        </p>
+      </div>
+      <div class="step">
+        <h3>5. Check the result</h3>
+        <p>
+          Review the record timeline and <strong>Impact</strong>. Sign out while connected, then
+          sign in as the clinic coordinator. The clinic's closure metrics include the worker's
+          completed referral. Small aggregate cells are suppressed to limit disclosure.
+        </p>
+      </div>
+      <div class="box">
+        <strong>What “done” means in the demo</strong><br />The record was saved, an appointment
+        created its follow-up, the outcome was recorded, the referral completed its allowed
+        transitions, and clinic metrics reflect closure.
+      </div>
+      <h3>Consent changes and archiving</h3>
+      <p>
+        Use the record's consent and archive actions when available to your role. Withdrawing
+        reminder permission should prevent further simulation on that channel. Review confirmation
+        text before archiving. Archiving is not an approved legal erasure process.
+      </p>
+      <p class="small">
+        Workers see assigned records. A missing record may reflect assignment or clinic scope; ask
+        the coordinator to check access rather than copying records into another account.
+      </p>
+    </section>
+
+    <section class="page">
+      <div class="eyebrow">03 / Roles, messages and security</div>
+      <h2>Explore the rest of the system</h2>
+      <table>
+        <tr>
+          <th>Role / section</th>
+          <th>Available use</th>
+        </tr>
+        <tr>
+          <td>Clinic coordinator</td>
+          <td>
+            Coordinate care inside the clinic, review clinic impact and manage the clinic
+            team/assignments through the available controls.
+          </td>
+        </tr>
+        <tr>
+          <td>Programme admin</td>
+          <td>
+            Manage facilities and access; view suppressed programme aggregates. Patient lists and
+            care timelines are unavailable.
+          </td>
+        </tr>
+        <tr>
+          <td>Auditor</td>
+          <td>
+            Review audit metadata and suppressed aggregates. No contact details or patient record
+            browsing.
+          </td>
+        </tr>
+        <tr>
+          <td>Message library</td>
+          <td>
+            Review approved source templates and deterministic drafts. A new draft requires review;
+            it is not automatically approved or sent.
+          </td>
+        </tr>
+        <tr>
+          <td>Audit trail</td>
+          <td>
+            Inspect permitted action metadata. Logs avoid contact details, message bodies and
+            clinical notes.
+          </td>
+        </tr>
+      </table>
+      <h3>Simulate a reminder</h3>
+      <ol>
+        <li>Open an assigned record with the relevant reminder consent.</li>
+        <li>Choose the available neutral template/channel and preview the message.</li>
+        <li>Use the simulation action and inspect its recorded result.</li>
+        <li>Withdraw that channel's consent and verify a further simulation is rejected.</li>
+      </ol>
+      <div class="box note">
+        <strong>There is no live SMS or WhatsApp connection.</strong> No reminder reaches a phone.
+        The content assistant uses approved local sources and deterministic drafting; it does not
+        call an external AI service or accept patient prompts.
+      </div>
+      <h3>Enable your two-factor sign-in</h3>
+      <p>
+        Use a dedicated test account so shared demo logins remain available. Open the account
+        security controls, confirm your current password and start authenticator setup. Add the
+        displayed secret to an authenticator app, enter its current code and complete activation.
+        Subsequent sign-in needs password plus code. Codes cannot be reused after acceptance. Keep
+        the authenticator available; self-service MFA recovery is not provided.
+      </p>
+      <p>
+        Enabling MFA revokes older sessions. Password resets and deactivation also invalidate stale
+        sessions, including sign-ins racing with the change. Local recovery is a localhost
+        development simulator; hosted verified recovery is still required.
+      </p>
+      <h3>Sign out safely</h3>
+      <p>
+        Reconnect before signing out. Successful sign-out revokes the server session and wipes the
+        tab's queued offline changes, encryption key and in-memory records. If offline, the app asks
+        you to reconnect so revocation can complete.
+      </p>
+    </section>
+
+    <section class="page">
+      <div class="eyebrow">04 / Offline use</div>
+      <h2>Capture offline, then synchronize</h2>
+      <p>
+        Offline support is designed around a prepared tab and an encrypted pending registration
+        queue. It does not provide a complete offline database of all mothers.
+      </p>
+      <ol>
+        <li>
+          <strong>Prepare while connected.</strong> Sign in and open <code>/offline</code> at the
+          same localhost origin. Let the offline shell and static assets load.
+        </li>
+        <li>
+          <strong>Keep the same tab.</strong> Disable connectivity using browser developer tools to
+          simulate offline mode. For this localhost demo, disabling Wi-Fi alone may leave the local
+          server reachable.
+        </li>
+        <li>
+          <strong>Test refresh.</strong> Refresh offline after preparation. The public registration
+          shell should load.
+        </li>
+        <li>
+          <strong>Register a fictional adult.</strong> Complete the form and submit. Verify it is
+          queued locally; it is not yet a server record.
+        </li>
+        <li>
+          <strong>Reconnect.</strong> Use <strong>Sync now</strong> in the offline shell or the
+          <strong>Offline queue</strong> section.
+        </li>
+        <li>
+          <strong>Confirm the result.</strong> Check that the queue clears and the new record
+          appears in Mothers. Schedule its appointment after synchronization.
+        </li>
+      </ol>
+      <h3>Limits you need to know</h3>
+      <ul>
+        <li>
+          Pending payloads are encrypted in IndexedDB. Their key stays in tab-session storage, and
+          queued changes expire after 24 hours.
+        </li>
+        <li>
+          Closing the tab, clearing browser storage or signing out can lose queued work or its key.
+          Synchronize before doing those actions.
+        </li>
+        <li>
+          Already-loaded records can remain in memory during a connection loss. Offline refresh
+          supports registration; it does not restore previously loaded patient detail.
+        </li>
+        <li>
+          Only public shell/static assets are cached. Personalized HTML and API responses are not
+          stored in the service worker's cache.
+        </li>
+        <li>
+          Synchronization rechecks authentication, consent, clinic/assignment scope and record
+          version. Duplicate replay is handled idempotently.
+        </li>
+      </ul>
+      <h3>If synchronization fails</h3>
+      <p>
+        Reconnect and confirm you are using the same account/tab. Read the error. If assignment,
+        consent or version changed, refresh the authoritative record and reconcile with the
+        coordinator. Discard obsolete queued content and re-enter the correct action where
+        appropriate. Do not force an overwrite.
+      </p>
+      <div class="box">
+        <strong>Before leaving a workstation</strong><br />Connect → synchronize → verify records →
+        sign out. A tab-held key is an additional control, not a substitute for device security or
+        an approved lost-device process.
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="eyebrow">05 / Delivery checkpoint</div>
+      <h2>What has been completed</h2>
+      <table>
+        <tr>
+          <th>Area</th>
+          <th>Implemented</th>
+        </tr>
+        <tr>
+          <td>Product</td>
+          <td>
+            Responsive landing/legal pages, original brand/PWA assets and worker, clinic, admin and
+            auditor dashboards.
+          </td>
+        </tr>
+        <tr>
+          <td>Care coordination</td>
+          <td>
+            Consent-led adult enrolment, mother records, appointments, follow-up outcomes, referral
+            transitions/closure, consent withdrawal and archiving.
+          </td>
+        </tr>
+        <tr>
+          <td>Access and security</td>
+          <td>
+            Tenant/clinic/assignment checks, role-specific data access, encrypted contacts/key
+            versions, redacted audit, origin protection, rate limits, password hashing, opaque
+            version-bound sessions and TOTP.
+          </td>
+        </tr>
+        <tr>
+          <td>Offline and content</td>
+          <td>
+            Encrypted actor-bound queue, expiry/idempotent replay, safe public shell, neutral
+            reminder simulation and approved-source draft/review.
+          </td>
+        </tr>
+        <tr>
+          <td>Delivery foundation</td>
+          <td>
+            Database migration/seed, lockfile, CI configuration, standalone build, container
+            configuration, local encrypted backup/restore tools, runbooks and screenshots.
+          </td>
+        </tr>
+      </table>
+      <h3>What was actually verified</h3>
+      <table>
+        <tr>
+          <th>Check</th>
+          <th>Observed result</th>
+        </tr>
+        <tr>
+          <td>Unit/database tests</td>
+          <td>17 passed across four files</td>
+        </tr>
+        <tr>
+          <td>Desktop/mobile browser suite</td>
+          <td>12 passed in the final compiled-app run; 6.1 minutes</td>
+        </tr>
+        <tr>
+          <td>Lint / TypeScript / build</td>
+          <td>Passed; Next.js 16.4.0</td>
+        </tr>
+        <tr>
+          <td>Local encrypted restore</td>
+          <td>Eight table counts matched; 15.436 seconds; separate scratch database</td>
+        </tr>
+        <tr>
+          <td>Local synthetic load</td>
+          <td>100 reads, concurrency 5, zero failures; p95 1,036 ms exceeds the 800 ms target</td>
+        </tr>
+        <tr>
+          <td>Dependency review</td>
+          <td>
+            Zero runtime advisories at review; five high development-only lint-chain findings remain
+            tracked
+          </td>
+        </tr>
+        <tr>
+          <td>Container build</td>
+          <td>
+            Two attempts failed during downloads; ECONNRESET. No successful container smoke test
+          </td>
+        </tr>
+        <tr>
+          <td>Extension hydration fix</td>
+          <td>
+            Solvely attribute reproduced before hydration in Chrome; no hydration warnings.
+            Lint/types passed.
+          </td>
+        </tr>
+      </table>
+      <p class="small">
+        The full suite preceded the final narrow layout fix; that fix received targeted Chrome
+        verification plus lint/types. Evidence is in docs/VERIFICATION.md and the backup/load JSON
+        files. These results do not prove production availability, clinical safety or independent
+        security certification.
+      </p>
+    </section>
+
+    <section class="page">
+      <div class="eyebrow">06 / Completion plan — engineering</div>
+      <h2>What remains, and how to finish it</h2>
+      <div class="step">
+        <h3>1. Finish reproducible hosted-demo deployment</h3>
+        <p>
+          <strong>Owner:</strong> developer / deployment lead. Resolve Docker's registry
+          connectivity or proxy issue and repeat
+          <code>docker build -t nurturepath-demo:reviewed .</code>. Keep TLS verification enabled.
+          Run the built image against a separate synthetic database, then verify health, sign-in and
+          referral closure. Alternatively validate a managed Next.js deployment using
+          docs/deployment.md.
+        </p>
+        <p>
+          <strong>Acceptance:</strong> immutable build, passing container/hosted smoke tests,
+          TLS/exact origin, secure cookies, controlled migrations, unique secrets and tested
+          rollback. No hosting account or public domain is currently provisioned.
+        </p>
+      </div>
+      <div class="step">
+        <h3>2. Connect identity, keys and audit infrastructure</h3>
+        <p>
+          <strong>Owner:</strong> developer + security lead. Add verified recovery delivery and
+          single-use recovery tests. Connect a managed key service to the versioned encryption
+          keyring; exercise rotation and restored-backup decryption. Export redacted audit metadata
+          to an access-controlled immutable store.
+        </p>
+        <p>
+          <strong>Acceptance:</strong> reviewed recovery abuse controls, access/key-rotation drills
+          and tamper-evidence assessment. Do not replace the sole decryption key in place.
+        </p>
+      </div>
+      <div class="step">
+        <h3>3. Build the live reminder pipeline</h3>
+        <p>
+          <strong>Owner:</strong> developer + partner/content owners. After approved provider
+          arrangements, implement durable scheduled jobs, retry/backoff, deduplication, quiet hours,
+          opt-out/STOP processing and authenticated delivery webhooks. Recheck consent immediately
+          before every send; avoid clinical details in neutral copy.
+        </p>
+        <p>
+          <strong>Acceptance:</strong> provider-sandbox tests demonstrate consent withdrawal, retry
+          safety, signed-webhook rejection, duplicate handling and opt-out. Keep the simulator
+          active until release approval.
+        </p>
+      </div>
+      <div class="step">
+        <h3>4. Close performance, accessibility and content gaps</h3>
+        <p>
+          <strong>Owner:</strong> developer + independent reviewers. Profile scoped reads and
+          database plans, improve measured bottlenecks, and repeat a documented staging load test.
+          Complete keyboard/screen-reader, mobile OS and device-storage assessment. Extend content
+          governance with reviewer identity, source/version, approval history and qualified
+          translation review.
+        </p>
+        <p>
+          <strong>Acceptance:</strong> p95 under 800 ms at an agreed load, resolved accessibility
+          findings and versioned content approval. No current local-language publication or
+          validated clinical translation is claimed.
+        </p>
+      </div>
+      <div class="box">
+        <strong>Recommended order</strong><br />Working hosted synthetic demo → identity/key/audit
+        infrastructure → provider sandbox and content governance → independent tests and exercises →
+        written gates → monitored pilot.
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="eyebrow">07 / Completion plan — production gates</div>
+      <h2>Obtain evidence before real onboarding</h2>
+      <p>
+        Every gate below is pending. The final production PDF requires external decisions and
+        operational evidence that software alone cannot supply.
+      </p>
+      <table>
+        <tr>
+          <th>Gate / owner</th>
+          <th>How to complete it</th>
+          <th>Evidence to retain</th>
+        </tr>
+        <tr>
+          <td>A — Partner<br />Partner/legal lead</td>
+          <td>
+            Confirm company rights, clinic authorization and controller/processor responsibilities
+            with the participating organisations.
+          </td>
+          <td>Signed authorizations and processing agreements</td>
+        </tr>
+        <tr>
+          <td>B — Legal<br />Qualified counsel / controller</td>
+          <td>
+            Review the data inventory, applicable law, residency/transfers, consent, retention and
+            rights process; complete the required privacy assessment.
+          </td>
+          <td>Written legal review, approved policies and DPIA/consent decisions</td>
+        </tr>
+        <tr>
+          <td>C — Clinical<br />Qualified clinician</td>
+          <td>
+            Review workflows, referral rules, emergency guidance, neutral copy and any translations.
+            Record approvals against specific versions.
+          </td>
+          <td>Clinical/content sign-off and controlled change process</td>
+        </tr>
+        <tr>
+          <td>D — Security<br />Security owner</td>
+          <td>
+            Commission an independent access/threat assessment. Fix findings; exercise encrypted
+            restore on approved staging and review key/device controls.
+          </td>
+          <td>Assessment, remediation/retest and recovery evidence</td>
+        </tr>
+        <tr>
+          <td>E — Operations<br />Operational owner</td>
+          <td>
+            Name on-call/support owners; establish monitoring, escalation and service targets;
+            rehearse outage, incident and lost-device processes.
+          </td>
+          <td>Runbooks, measured SLOs, drill results and contacts</td>
+        </tr>
+        <tr>
+          <td>F — Pilot<br />Partner + clinical + legal</td>
+          <td>
+            Agree a limited cohort, consent process, monitoring, stop criteria and rollback, then
+            approve the reviewed release.
+          </td>
+          <td>Signed pilot protocol and release authorization</td>
+        </tr>
+      </table>
+      <h3>Then release a limited pilot</h3>
+      <ol>
+        <li>Review all six approvals and remaining findings together.</li>
+        <li>Approve hosting/database/provider contracts and separate environments.</li>
+        <li>
+          Test backup, migration, rollback, monitoring and the same immutable release artifact.
+        </li>
+        <li>Implement a reviewed onboarding-enabled release after evidence is verified.</li>
+        <li>
+          Launch the agreed limited pilot, monitor results and stop if its criteria are triggered.
+        </li>
+      </ol>
+      <div class="box note">
+        <strong>Changing DEMO_MODE is not approval.</strong> In this release,
+        <code>DEMO_MODE=false</code> blocks care writes. Do not bypass that control to enter real
+        records. Real-data launch requires a subsequent reviewed software release.
+      </div>
+      <p class="small">
+        This guide describes project completion steps; it does not provide medical advice, legal
+        conclusions, certification or a claim of UNICEF endorsement.
+      </p>
+    </section>
+
+    <section class="page">
+      <div class="eyebrow">08 / Maintain and hand over</div>
+      <h2>Keep the demo working</h2>
+      <h3>Routine checks</h3>
+      <pre><code>npm run lint
+npm run typecheck
+npm test
+npm audit --omit=dev</code></pre>
+      <p>
+        Database tests need the migrated/seeded local database. For a release check, stop the server
+        first on Windows, then build and start:
+      </p>
+      <pre><code>npm run build
+npm run start
+# In a second PowerShell terminal:
+$env:PLAYWRIGHT_CHANNEL='chrome'
+$env:PLAYWRIGHT_PRODUCTION='true'
+npm run test:e2e</code></pre>
+      <p>
+        Browser tests leave clearly labelled fictional E2E records. The guarded reset command is
+        documented in README.md; it clears local demonstration care records, so review its
+        confirmation requirements first.
+      </p>
+      <h3>Common problems</h3>
+      <table>
+        <tr>
+          <th>Symptom</th>
+          <th>Action</th>
+        </tr>
+        <tr>
+          <td>Site unavailable</td>
+          <td>
+            Start the app; read the terminal output; use port 3200. Check Docker Desktop and
+            <code>docker compose up -d db</code>.
+          </td>
+        </tr>
+        <tr>
+          <td>Sign-in rejected</td>
+          <td>
+            Check account/password, exact APP_URL origin and any enabled authenticator code. Use the
+            configured demo password if changed.
+          </td>
+        </tr>
+        <tr>
+          <td>Record missing / forbidden</td>
+          <td>
+            Confirm worker assignment, clinic, role, consent and account status with the
+            coordinator.
+          </td>
+        </tr>
+        <tr>
+          <td>Offline queue will not sync</td>
+          <td>
+            Reconnect in the same tab/account; inspect conflicts; synchronize before logout or
+            closing the tab.
+          </td>
+        </tr>
+        <tr>
+          <td>Build reports Prisma DLL locked</td>
+          <td>
+            Stop the project's running Node server with Ctrl+C, then rebuild. Do not stop unrelated
+            apps.
+          </td>
+        </tr>
+        <tr>
+          <td>Extension hydration warning</td>
+          <td>
+            Refresh after the applied root-layout fix. The reported Solvely attribute was verified.
+            A different warning needs its own diagnosis.
+          </td>
+        </tr>
+      </table>
+      <h3>Files to hand to the next developer</h3>
+      <p>
+        <strong>README.md:</strong> setup/accounts.
+        <strong>docs/CURRENT-STATE.md:</strong> continuation checkpoint.
+        <strong>docs/VERIFICATION.md:</strong> measured evidence.
+        <strong>docs/PRODUCTION-READINESS.md:</strong> remaining gaps.
+        <strong>docs/deployment.md</strong> and
+        <strong>docs/operations.md:</strong> release/recovery guidance.
+        <strong>docs/architecture.md</strong> and <strong>docs/api.md:</strong> technical map. Keep
+        environment keys and encrypted backups separate from source control.
+      </p>
+      <p class="small">
+        Editable guide: docs/USER-GUIDE.html. Recreate the PDF with
+        <code>node scripts/create-user-guide.mjs</code> using installed Chrome. Source PDFs remain
+        in the project root.
+      </p>
+    </section>
+  </body>
+</html>

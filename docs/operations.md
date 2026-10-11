@@ -23,7 +23,7 @@ Record exercise timestamp, source/target identity, checksums, table counts, fail
 
 ## Contact key rotation plan
 
-Current ciphertext uses version `v1` AES-256-GCM. Before real launch, implement a KMS-backed key ring with explicit key IDs, deploy old/new decrypt support, re-encrypt contacts in bounded audited batches, compare decrypt checks without logging plaintext, verify backup recovery, switch write key, and retire the old key only after retention/restore requirements permit. Never rotate the sole key in place: existing contacts would be lost.
+The implemented AES-256-GCM keyring supports explicit version IDs, old/new decryption and an active write key. `scripts/rotate-contact-key.ts` is restricted to the local synthetic database and a configured new key ID; it re-encrypts contacts with version checks and audited updates. Before real launch, connect managed keys, review bounded batch behavior, exercise rotation and backup recovery, and retire old keys only after retention/restore requirements permit. Never replace the sole key in place: existing contacts would be lost.
 
 ## Release ownership
 

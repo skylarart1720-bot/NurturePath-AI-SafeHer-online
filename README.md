@@ -2,6 +2,8 @@
 
 Every mother deserves care that follows her home.
 
+Download the [user and completion guide PDF](docs/NurturePath-AI-User-Guide.pdf) for setup, a demo walkthrough, completed work and the production completion plan. Its editable source is `docs/USER-GUIDE.html`.
+
 An offline-capable, Ghana-first maternal follow-up and closed-loop referral coordination prototype. Next.js App Router, TypeScript, PostgreSQL/Prisma, Dexie encrypted offline queue, and opaque database-backed sessions. **Synthetic adults only. No clinical advice, live messaging, or real-patient onboarding.**
 
 ## Local setup
