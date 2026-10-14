@@ -21,7 +21,7 @@ export default defineConfig({
   ],
   webServer: {
     command: process.env.PLAYWRIGHT_PRODUCTION === 'true' ? 'npm run start' : 'npm run dev',
-    url: process.env.APP_URL ?? 'http://localhost:3200',
+    url: (process.env.APP_URL ?? 'http://localhost:3200') + '/api/health',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
   },

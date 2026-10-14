@@ -1,19 +1,17 @@
 {
-  "name": "NurturePath AI",
-  "short_name": "NurturePath",
-  "description": "Synthetic maternal follow-up coordination demo",
-  "start_url": "/worker",
-  "scope": "/",
+  "name": "NurturePath AI — SafeHer",
+  "short_name": "SafeHer",
+  "description": "Safe information. Safe choices. Safer futures.",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#f5f8f7",
-  "theme_color": "#087E83",
+  "background_color": "#ffffff",
+  "theme_color": "#087e83",
   "icons": [
-    { "src": "/brand/icon-192.png", "sizes": "192x192", "type": "image/png" },
     {
-      "src": "/brand/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "src": "/brand/safeher.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ]
 }

@@ -30,7 +30,7 @@ if (mode === 'start') {
   ];
 const child = spawn(process.execPath, args, {
   stdio: 'inherit',
-  env: { ...process.env, PORT: String(port), HOSTNAME: process.env.NP_BIND_HOST || '127.0.0.1' },
+  env: { ...process.env, PORT: String(port), HOSTNAME: process.env.NP_BIND_HOST || '127.0.0.1', SAFEHER_DEV_SERVER: mode === 'dev' ? 'true' : 'false' },
 });
 process.on('SIGINT', () => child.kill('SIGTERM'));
 process.on('SIGTERM', () => child.kill('SIGTERM'));

@@ -79,8 +79,29 @@ await new Promise((resolve, reject) => {
   );
   child.stdin.end(restored);
 });
+const tables = [
+  'Organization',
+  'Clinic',
+  'User',
+  'Mother',
+  'Consent',
+  'Appointment',
+  'FollowUp',
+  'Referral',
+  'SafeherContent',
+  'SafeherRevision',
+  'SafeherTranslation',
+  'SafeherService',
+  'SafeherServiceReview',
+  'SafeherProgress',
+  'SafeherFeedback',
+  'SafeherMetric',
+  'SafeherDeletion',
+  'SafeherEnrollment',
+];
 const sql =
-  'SELECT \'Organization\',count(*) FROM "Organization" UNION ALL SELECT \'Clinic\',count(*) FROM "Clinic" UNION ALL SELECT \'User\',count(*) FROM "User" UNION ALL SELECT \'Mother\',count(*) FROM "Mother" UNION ALL SELECT \'Consent\',count(*) FROM "Consent" UNION ALL SELECT \'Appointment\',count(*) FROM "Appointment" UNION ALL SELECT \'FollowUp\',count(*) FROM "FollowUp" UNION ALL SELECT \'Referral\',count(*) FROM "Referral" ORDER BY 1';
+  tables.map((table) => `SELECT '${table}',count(*) FROM "${table}"`).join(' UNION ALL ') +
+  ' ORDER BY 1';
 const source = (
   await docker('psql', '-U', 'nurturepath', '-d', 'nurturepath', '-At', '-c', sql)
 ).stdout.toString();

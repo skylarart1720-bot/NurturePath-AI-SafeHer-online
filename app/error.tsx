@@ -1,10 +1,12 @@
 'use client';
+import { SafeherPage } from '@/components/safeher-page';
 export default function ErrorPage({ reset }: { reset: () => void }) {
   return (
-    <main id="main" className="legal">
-      <h1>Your workspace needs a moment</h1>
-      <p>The request could not be completed. Your saved records remain on the server.</p>
+    <SafeherPage
+      title="This page needs a moment."
+      intro="The request could not be completed. Please try again when your connection is available."
+    >
       <button onClick={reset}>Try again</button>
-    </main>
+    </SafeherPage>
   );
 }

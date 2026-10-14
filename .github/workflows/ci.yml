@@ -25,6 +25,8 @@ jobs:
       APP_URL: http://localhost:3200
       DEMO_MODE: 'true'
       DEMO_PASSWORD: CiSyntheticDemo!2026
+      SAFEHER_DEMO_PASSWORD: CiSyntheticDemo!2026
+      SAFEHER_PILOT_REVIEW_ENABLED: 'false'
       MESSAGE_PROVIDER: simulator
     steps:
       - uses: actions/checkout@v4
@@ -36,6 +38,8 @@ jobs:
       - run: npx prisma generate
       - run: npm run db:migrate
       - run: npm run db:seed
+      - run: npm run db:seed:safeher
+      - run: npm run directory:seed
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
@@ -43,6 +47,8 @@ jobs:
       - run: npm audit --omit=dev --audit-level=high
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+        env:
+          PLAYWRIGHT_PRODUCTION: 'true'
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

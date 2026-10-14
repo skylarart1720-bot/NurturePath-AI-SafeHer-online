@@ -18,6 +18,15 @@ import { simplifyApprovedContent } from './ai';
 
 export type Tx = Prisma.TransactionClient;
 const uuid = z.string().uuid();
+const staffInput = z
+  .object({
+    name: z.string().trim().min(2).max(80),
+    email: z.string().email().max(200),
+    role: z.enum(['HEALTH_WORKER', 'CLINIC_ADMIN', 'AUDITOR']),
+    clinicId: uuid.optional(),
+    password: z.string().min(12).max(128),
+  })
+  .strict();
 const versionInput = z.number().int().positive();
 export function audit(tx: Tx, actor: Actor, entityType: string, entityId: string, action: string) {
   return tx.auditEvent.create({
@@ -52,7 +61,13 @@ export function checkVersion(actual: number, expected: number) {
 function isoDate(value: string) {
   return new Date(value);
 }
-export async function mutate(tx: Tx, actor: Actor, kind: string, raw: unknown) {
+export async function mutate(
+  tx: Tx,
+  actor: Actor,
+  kind: string,
+  raw: unknown,
+  preparedPasswordHash?: string,
+) {
   requireDemo();
   if (kind === 'mothers') {
     assertOnboardingAllowed();
@@ -476,16 +491,7 @@ export async function mutate(tx: Tx, actor: Actor, kind: string, raw: unknown) {
   }
   if (kind === 'users') {
     allow(actor, ['PLATFORM_ADMIN']);
-    const data = z
-      .object({
-        name: z.string().trim().min(2).max(80),
-        email: z.string().email().max(200),
-        role: z.enum(['HEALTH_WORKER', 'CLINIC_ADMIN', 'AUDITOR']),
-        clinicId: uuid.optional(),
-        password: z.string().min(12).max(128),
-      })
-      .strict()
-      .parse(raw);
+    const data = staffInput.parse(raw);
     if (data.role !== 'AUDITOR') {
       if (
         !data.clinicId ||
@@ -502,7 +508,7 @@ export async function mutate(tx: Tx, actor: Actor, kind: string, raw: unknown) {
         role: data.role,
         organizationId: actor.organizationId,
         clinicId: data.role === 'AUDITOR' ? null : data.clinicId,
-        passwordHash: await bcrypt.hash(data.password, 12),
+        passwordHash: preparedPasswordHash ?? (await bcrypt.hash(data.password, 12)),
       },
     });
     await audit(tx, actor, 'User', row.id, 'CREATE');
@@ -512,7 +518,13 @@ export async function mutate(tx: Tx, actor: Actor, kind: string, raw: unknown) {
 }
 
 export async function write(actor: Actor, kind: string, payload: unknown) {
-  return db.$transaction((tx) => mutate(tx, actor, kind, payload), {
+  let passwordHash: string | undefined;
+  if (kind === 'users') {
+    requireDemo();
+    allow(actor, ['PLATFORM_ADMIN']);
+    passwordHash = await bcrypt.hash(staffInput.parse(payload).password, 12);
+  }
+  return db.$transaction((tx) => mutate(tx, actor, kind, payload, passwordHash), {
     isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
   });
 }

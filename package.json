@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "node scripts/run-next.mjs dev",
     "build": "prisma generate && next build",
@@ -12,13 +15,23 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "db:generate": "prisma generate",
+    "deploy:check": "node --env-file-if-exists=.env.local scripts/check-deployment-env.mjs",
+    "deploy:smoke": "node scripts/verify-safeher-deployment.mjs",
     "db:migrate": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
     "db:reset-demo": "tsx scripts/reset-demo.ts",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "db:seed:safeher": "tsx prisma/safeher-seed.ts",
+    "directory:seed": "tsx prisma/ghana-directory-seed.ts",
+    "safeher:maintenance": "tsx scripts/safeher-maintenance.ts",
+    "test:safeher": "vitest run tests/unit/safeher.test.ts tests/integration/safeher.test.ts",
+    "test:e2e:safeher": "playwright test tests/e2e/safeher.spec.ts tests/e2e/safeher-review.spec.ts tests/e2e/ghana-directory.spec.ts tests/e2e/safeher-readiness.spec.ts",
+    "safeher:enrollment": "tsx scripts/safeher-enrollment.ts",
+    "safeher:deletion-ledger": "tsx scripts/safeher-deletion-ledger.ts"
   },
   "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
     "@hookform/resolvers": "^5.2.2",
     "@prisma/client": "^6.19.0",
     "bcryptjs": "^3.0.2",
@@ -35,6 +48,7 @@
     "deepmerge-ts": "8.0.2"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.56.1",
     "@tailwindcss/postcss": "^4.1.17",
     "@testing-library/react": "^16.3.0",

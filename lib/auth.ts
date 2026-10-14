@@ -18,6 +18,14 @@ export async function currentActor(): Promise<Actor | null> {
     !tokenVersionCurrent(token, session.user.sessionVersion)
   )
     return null;
+  if (
+    process.env.DEMO_MODE !== 'true' &&
+    ['PLATFORM_ADMIN', 'CONTENT_REVIEWER', 'SUPPORT_PARTNER', 'CLINIC_ADMIN'].includes(
+      session.user.role,
+    ) &&
+    !session.user.mfaEnabled
+  )
+    return null;
   const { id, organizationId, clinicId, role, name, email } = session.user;
   return { id, organizationId, clinicId, role, name, email };
 }

@@ -1,0 +1,15 @@
+# SafeHer synthetic presentation script
+
+Three-minute version: 0:00–0:20 explain the educational preview and source-check limits; 0:20–0:55 ask about harassment and open its attributed lesson; 0:55–1:25 complete the consent quiz as a guest; 1:25–2:05 filter the real directory and demonstrate deliberate contact consent without calling; 2:05–2:35 save a reviewed lesson and show its offline review/expiry metadata; 2:35–3:00 explain Quick Exit traces, optional accounts, and pending professional/operational gates. Use synthetic scenarios only. The longer five-journey script below supports questions and evaluation.
+
+Start the app using [setup](SAFEHER-SETUP.md), seed SafeHer and the Ghana directory, and open the public landing page. Explain that educational content is demonstration-reviewed and the directory contains real organisations with dated public-source checks. Availability and partnerships are unconfirmed. Do not show real patient data or claim real service outcomes.
+
+1. **Online harassment:** open Ask SafeHer, enter “How can I handle online harassment?”, read source-attributed guidance, open a related lesson, then visit Digital safety. Point out no evidence uploads, chat storage, diagnosis or emergency scoring. Show Quick Exit’s history limitations without opening it during the presentation.
+2. **Consent:** open Know your rights → Consent is your choice. Read the short lesson, choose “No. Ask separately before sharing,” and check the quiz answer. Show free guest access. Optionally log into the synthetic learner account to save progress; guest completion is not persisted.
+3. **Child marriage:** ask “What is child marriage?”, follow the UNICEF reference and related lesson, and discuss seeking qualified local support. Explain this is general information rather than a legal determination.
+4. **Reproductive healthcare:** open Find support and filter Reproductive healthcare. Inspect MSI Ghana or PPAG, including source links and check dates. Open Review contact options, explain confidentiality and operator records, acknowledge the limits, and continue to reveal published phone/website options. Do not place a real call during the demonstration. No referral has been sent. Cancel. Optionally expand Directory display options to show that preserved synthetic examples remain clearly labeled and never receive contact links.
+5. **Limited connectivity:** open Digital privacy while connected, save for offline reading, wait for the service worker to be ready, and open `/offline`. Turn off network access and refresh. Select the saved lesson and read it. Point out that chat and live directory need connectivity. Restore networking and remove the download.
+
+Administrator extension: sign in as `admin@safeher.example`; show content review, service verification disabled for synthetic examples, aggregate thresholds, structured feedback and redacted audit entries. Reviewer/partner accounts have narrower permissions. No dashboard contains sensitive conversations.
+
+Closing line: “Safe information. Safe choices. Safer futures.” Avoid claims of prevented abuse, clinical outcomes, real referrals, or unique users based on test counters.

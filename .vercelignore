@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+backups
+test-results
+playwright-report
+.git
+node_modules
+.next
+.next-dev
+coverage
+docs/screenshots
+*.pdf

@@ -1,3 +1,4 @@
+import { readJson } from '@/lib/request-body';
 import { randomBytes } from 'node:crypto';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
@@ -8,7 +9,7 @@ import { AppError } from '@/lib/permissions';
 export async function POST(request: Request) {
   try {
     checkOrigin(request);
-    const raw = await request.json();
+    const raw = (await readJson(request, 4096)) as { token?: unknown };
     if (raw.token) {
       const data = z
         .object({ token: z.string().min(30).max(100), password: z.string().min(12).max(128) })

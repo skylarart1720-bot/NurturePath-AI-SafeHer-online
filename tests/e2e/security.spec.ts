@@ -7,7 +7,7 @@ test('MFA setup requires a password and prevents code reuse', async ({ page }) =
     email = `mfa-${Date.now()}@demo.nurturepath.test`;
   let userId = '';
   try {
-    await page.goto('/login');
+    await page.goto('/legacy-login');
     await page.getByRole('button', { name: 'Programme admin', exact: true }).click();
     await page.getByLabel('Password', { exact: true }).fill(password);
     await page.getByRole('button', { name: 'Sign in to workspace' }).click();
@@ -22,7 +22,7 @@ test('MFA setup requires a password and prevents code reuse', async ({ page }) =
     expect(create.ok()).toBe(true);
     userId = (await create.json()).data.id;
     await page.request.post('/api/auth/logout', { headers: { Origin: origin }, data: {} });
-    await page.goto('/login');
+    await page.goto('/legacy-login');
     await page.getByLabel('Email address').fill(email);
     await page.getByLabel('Password', { exact: true }).fill(password);
     await page.getByRole('button', { name: 'Sign in to workspace' }).click();

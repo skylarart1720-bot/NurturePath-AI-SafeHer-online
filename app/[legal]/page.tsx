@@ -105,7 +105,9 @@ const pages: Record<string, { title: string; sections: { title: string; body: st
   },
 };
 export function generateStaticParams() {
-  return Object.keys(pages).map((legal) => ({ legal }));
+  return Object.keys(pages)
+    .filter((legal) => !['privacy', 'safety'].includes(legal))
+    .map((legal) => ({ legal }));
 }
 export default async function Legal({ params }: { params: Promise<{ legal: string }> }) {
   const p = pages[(await params).legal];

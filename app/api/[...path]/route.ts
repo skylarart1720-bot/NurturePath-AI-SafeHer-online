@@ -1,3 +1,4 @@
+import { readJson } from '@/lib/request-body';
 import { NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 import { Prisma } from '@prisma/client';
@@ -11,19 +12,14 @@ async function handler(request: Request, context: { params: Promise<{ path: stri
   const correlationId = crypto.randomUUID();
   try {
     const actor = await requireActor();
+    if (['REGISTERED_USER', 'SUPPORT_PARTNER', 'CONTENT_REVIEWER'].includes(actor.role))
+      throw new AppError(403, 'FORBIDDEN', 'SafeHer accounts cannot access legacy clinical data.');
     await rateLimit('actor:' + actor.id, 180);
     let kind = (await context.params).path.join('/');
     if (request.method === 'GET')
       return NextResponse.json({ data: await read(actor, kind, new URL(request.url)) });
     checkOrigin(request);
-    const text = await request.text();
-    if (text.length > 20000) throw new AppError(413, 'PAYLOAD', 'Request is too large.');
-    let data: unknown;
-    try {
-      data = JSON.parse(text);
-    } catch {
-      throw new AppError(400, 'JSON', 'Invalid JSON.');
-    }
+    let data = await readJson(request);
     if (request.method === 'PATCH') {
       if (
         kind.startsWith('mothers/') &&
@@ -75,6 +71,7 @@ async function handler(request: Request, context: { params: Promise<{ path: stri
         event: 'api_failure',
         correlationId,
         category: error instanceof Error ? error.constructor.name : 'unknown',
+        code: error instanceof Prisma.PrismaClientKnownRequestError ? error.code : undefined,
       }),
     );
     return NextResponse.json(

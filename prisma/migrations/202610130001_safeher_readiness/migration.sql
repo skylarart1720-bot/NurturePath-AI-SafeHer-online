@@ -1,0 +1,14 @@
+ALTER TABLE "SafeherContent" ADD COLUMN "reviewExpiresAt" TIMESTAMP(3);
+UPDATE "SafeherContent" SET "reviewExpiresAt" = "reviewedAt" + INTERVAL '180 days' WHERE "reviewedAt" IS NOT NULL;
+ALTER TABLE "SafeherService" ADD COLUMN "reviewExpiresAt" TIMESTAMP(3), ADD COLUMN "accessibility" TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[], ADD COLUMN "accessibilityConfirmedAt" TIMESTAMP(3), ADD COLUMN "publicationStatus" TEXT NOT NULL DEFAULT 'PUBLISHED';
+UPDATE "SafeherService" SET "reviewExpiresAt" = "verifiedAt" + INTERVAL '180 days' WHERE "verifiedAt" IS NOT NULL;
+CREATE TABLE "SafeherRevision" ("id" TEXT NOT NULL, "slug" TEXT NOT NULL, "version" INTEGER NOT NULL, "locale" TEXT NOT NULL, "lesson" JSONB NOT NULL, "status" TEXT NOT NULL, "reviewScope" TEXT NOT NULL, "reviewedAt" TIMESTAMP(3), "reviewExpiresAt" TIMESTAMP(3), "actorId" TEXT NOT NULL, "action" TEXT NOT NULL, "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT "SafeherRevision_pkey" PRIMARY KEY ("id"));
+CREATE UNIQUE INDEX "SafeherRevision_slug_version_key" ON "SafeherRevision"("slug", "version");
+CREATE INDEX "SafeherRevision_slug_createdAt_idx" ON "SafeherRevision"("slug", "createdAt");
+INSERT INTO "SafeherRevision" ("id", "slug", "version", "locale", "lesson", "status", "reviewScope", "reviewedAt", "reviewExpiresAt", "actorId", "action") SELECT 'baseline-' || "slug", "slug", "version", "locale", "lesson", "status", "reviewScope", "reviewedAt", "reviewExpiresAt", COALESCE("reviewedBy", 'migration'), 'MIGRATION_BASELINE' FROM "SafeherContent";
+CREATE TABLE "SafeherTranslation" ("id" TEXT NOT NULL, "sourceSlug" TEXT NOT NULL, "sourceVersion" INTEGER NOT NULL, "locale" TEXT NOT NULL, "lesson" JSONB NOT NULL, "version" INTEGER NOT NULL DEFAULT 1, "status" TEXT NOT NULL DEFAULT 'DRAFT', "reviewedBy" TEXT, "reviewedAt" TIMESTAMP(3), "reviewExpiresAt" TIMESTAMP(3), CONSTRAINT "SafeherTranslation_pkey" PRIMARY KEY ("id"));
+CREATE UNIQUE INDEX "SafeherTranslation_sourceSlug_locale_key" ON "SafeherTranslation"("sourceSlug", "locale");
+CREATE TABLE "SafeherServiceReview" ("id" TEXT NOT NULL, "serviceId" TEXT NOT NULL, "actorId" TEXT NOT NULL, "action" TEXT NOT NULL, "snapshot" JSONB NOT NULL, "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT "SafeherServiceReview_pkey" PRIMARY KEY ("id"));
+CREATE INDEX "SafeherServiceReview_serviceId_createdAt_idx" ON "SafeherServiceReview"("serviceId", "createdAt");
+INSERT INTO "SafeherServiceReview" ("id", "serviceId", "actorId", "action", "snapshot") SELECT 'baseline-' || "id", "id", COALESCE("verifiedBy", 'migration'), 'MIGRATION_BASELINE', to_jsonb(s) FROM "SafeherService" s;
+CREATE TABLE "SafeherDeletion" ("userId" TEXT NOT NULL, "scope" TEXT NOT NULL, "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT "SafeherDeletion_pkey" PRIMARY KEY ("userId"));

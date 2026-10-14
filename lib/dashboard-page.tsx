@@ -4,6 +4,8 @@ import { Workspace } from '@/components/workspace';
 export async function dashboardPage(role: string, section: string[] = []) {
   const actor = await currentActor();
   if (!actor) redirect('/login');
+  if (['REGISTERED_USER', 'SUPPORT_PARTNER', 'CONTENT_REVIEWER'].includes(actor.role))
+    redirect('/dashboard');
   const target =
     actor.role === 'HEALTH_WORKER' ? 'worker' : actor.role === 'CLINIC_ADMIN' ? 'clinic' : 'admin';
   if (target !== role) redirect('/' + target);

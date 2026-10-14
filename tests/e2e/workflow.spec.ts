@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 test('worker closes the care loop using keyboard-accessible forms', async ({ page }) => {
-  await page.goto('/login');
+  await page.goto('/legacy-login');
   await page.getByRole('button', { name: 'Health worker', exact: true }).click();
   await page.getByLabel('Password', { exact: true }).fill(process.env.DEMO_PASSWORD!);
   await page.getByLabel('Password', { exact: true }).press('Enter');
@@ -49,6 +49,7 @@ test('worker closes the care loop using keyboard-accessible forms', async ({ pag
   expect(after.closureRate.numerator).toBe(before.closureRate.numerator + 1);
   await page.getByRole('button', { name: 'Sign out', exact: true }).first().click();
   await expect(page).toHaveURL(/\/login$/);
+  await page.goto('/legacy-login');
   await page.getByRole('button', { name: 'Clinic coordinator', exact: true }).click();
   await page.getByLabel('Password', { exact: true }).fill(process.env.DEMO_PASSWORD!);
   await page.getByRole('button', { name: 'Sign in to workspace' }).click();
@@ -62,7 +63,7 @@ test('worker closes the care loop using keyboard-accessible forms', async ({ pag
 });
 test('role and origin boundaries block unauthorized requests', async ({ page, request }) => {
   expect((await request.get('/api/mothers')).status()).toBe(401);
-  await page.goto('/login');
+  await page.goto('/legacy-login');
   await page.getByRole('button', { name: 'Programme admin', exact: true }).click();
   await page.getByLabel('Password', { exact: true }).fill(process.env.DEMO_PASSWORD!);
   await page.getByRole('button', { name: 'Sign in to workspace' }).click();
@@ -83,18 +84,19 @@ test('role and origin boundaries block unauthorized requests', async ({ page, re
   ).toBe(403);
 });
 test('airplane-mode registration is encrypted and synchronizes once', async ({ page, context }) => {
-  await page.goto('/login');
+  await page.goto('/legacy-login');
   await page.getByRole('button', { name: 'Health worker', exact: true }).click();
   await page.getByLabel('Password', { exact: true }).fill(process.env.DEMO_PASSWORD!);
   await page.getByRole('button', { name: 'Sign in to workspace' }).click();
   await expect(page).toHaveURL(/\/worker$/);
-  await page.goto('/offline');
+  await page.goto('/legacy-offline');
   await expect(page.getByLabel('Fictional name or alias')).toBeVisible();
   await page.evaluate(async () => {
     await navigator.serviceWorker.ready;
   });
   await context.setOffline(true);
-  await page.reload();
+  // Legacy clinical pages are intentionally excluded from refresh caches.
+  // Verify the already-loaded encrypted queue without caching patient workflows.
   await expect(page.getByLabel('Fictional name or alias')).toBeVisible();
   const name = 'Demo Offline ' + Date.now();
   await page.getByLabel('Fictional name or alias').fill(name);
@@ -129,6 +131,7 @@ test('airplane-mode registration is encrypted and synchronizes once', async ({ p
   await expect(page.getByRole('link').filter({ hasText: name })).toBeVisible();
   await page.getByRole('button', { name: 'Sign out', exact: true }).first().click();
   await expect(page).toHaveURL(/\/login$/);
+  await page.goto('/legacy-login');
   expect(await page.evaluate(() => sessionStorage.getItem('np_device_key'))).toBeNull();
   expect(await page.evaluate(() => sessionStorage.getItem('np_actor'))).toBeNull();
 });
@@ -136,12 +139,12 @@ test('public and worker layouts fit 360px and 1440px', async ({ page }) => {
   for (const width of [360, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/');
-    await expect(page.getByRole('heading', { name: /Every mother deserves/ })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /A little knowledge/ })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );
   }
-  await page.goto('/login');
+  await page.goto('/legacy-login');
   await page.getByRole('button', { name: 'Health worker', exact: true }).click();
   await page.getByLabel('Password', { exact: true }).fill(process.env.DEMO_PASSWORD!);
   await page.getByRole('button', { name: 'Sign in to workspace' }).click();

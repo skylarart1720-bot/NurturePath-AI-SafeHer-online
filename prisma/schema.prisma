@@ -10,6 +10,9 @@ enum Role {
   CLINIC_ADMIN
   HEALTH_WORKER
   AUDITOR
+  REGISTERED_USER
+  SUPPORT_PARTNER
+  CONTENT_REVIEWER
 }
 enum ReferralStatus {
   CREATED
@@ -56,7 +59,128 @@ model User {
   assignedMothers Mother[]
   sessions Session[]
   resetTokens PasswordReset[]
+  safeherProgress SafeherProgress[]
   @@index([organizationId, clinicId])
+}
+
+model SafeherContent {
+  slug String @id
+  lesson Json
+  locale String @default("en")
+  status String @default("DRAFT")
+  reviewScope String @default("DEMO_ONLY")
+  reviewedAt DateTime?
+  reviewedBy String?
+  reviewExpiresAt DateTime?
+  version Int @default(1)
+  updatedAt DateTime @updatedAt
+}
+
+model SafeherService {
+  id String @id @default(uuid())
+  name String
+  description String
+  region String
+  category String
+  accessMethod String
+  eligibility String
+  hours String?
+  contactUrl String?
+  contactPhone String?
+  contactEmail String?
+  serviceCategories String[] @default([])
+  accessMethods String[] @default([])
+  verificationMethod String @default("RECORDED_REVIEW")
+  verificationSource String?
+  verifiedAt DateTime?
+  verifiedBy String?
+  reviewExpiresAt DateTime?
+  accessibility String[] @default([])
+  accessibilityConfirmedAt DateTime?
+  publicationStatus String @default("PUBLISHED")
+  synthetic Boolean @default(true)
+  partnerId String?
+  referralInstructions String
+  updatedAt DateTime @updatedAt
+}
+
+model SafeherRevision {
+  id String @id @default(uuid())
+  slug String
+  version Int
+  locale String
+  lesson Json
+  status String
+  reviewScope String
+  reviewedAt DateTime?
+  reviewExpiresAt DateTime?
+  actorId String
+  action String
+  createdAt DateTime @default(now())
+  @@unique([slug, version])
+  @@index([slug, createdAt])
+}
+
+model SafeherTranslation {
+  id String @id @default(uuid())
+  sourceSlug String
+  sourceVersion Int
+  locale String
+  lesson Json
+  version Int @default(1)
+  status String @default("DRAFT")
+  reviewedBy String?
+  reviewedAt DateTime?
+  reviewExpiresAt DateTime?
+  @@unique([sourceSlug, locale])
+}
+
+model SafeherServiceReview {
+  id String @id @default(uuid())
+  serviceId String
+  actorId String
+  action String
+  snapshot Json
+  createdAt DateTime @default(now())
+  @@index([serviceId, createdAt])
+}
+
+model SafeherDeletion {
+  userId String @id
+  scope String
+  createdAt DateTime @default(now())
+}
+
+model SafeherEnrollment {
+  id String @id
+  userId String
+  expiresAt DateTime
+  usedAt DateTime?
+  secretEncrypted String?
+  @@index([expiresAt])
+}
+
+model SafeherProgress {
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  slug String
+  completedAt DateTime @default(now())
+  @@id([userId, slug])
+}
+
+model SafeherFeedback {
+  id String @id @default(uuid())
+  category String
+  rating String
+  createdAt DateTime @default(now())
+}
+
+model SafeherMetric {
+  day String
+  event String
+  locale String @default("en")
+  count Int @default(1)
+  @@id([day, event, locale])
 }
 model Session {
   id String @id

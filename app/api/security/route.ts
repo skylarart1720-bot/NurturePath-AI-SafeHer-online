@@ -1,3 +1,4 @@
+import { readJson } from '@/lib/request-body';
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
@@ -30,7 +31,7 @@ export async function POST(request: Request) {
           .optional(),
       })
       .strict()
-      .parse(await request.json());
+      .parse(await readJson(request, 4096));
     const user = await db.user.findUniqueOrThrow({ where: { id: actor.id } });
     if (!(await bcrypt.compare(data.password, user.passwordHash)))
       throw new AppError(401, 'PASSWORD', 'Current password is incorrect.');

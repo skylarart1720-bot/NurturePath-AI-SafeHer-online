@@ -6,6 +6,7 @@ import { checkOrigin, createSession, rateLimit } from '@/lib/auth';
 import { AppError } from '@/lib/permissions';
 import { decryptContact } from '@/lib/encryption';
 import { verifyTotp } from '@/lib/mfa';
+import { readJson } from '@/lib/request-body';
 const input = z
   .object({
     email: z.string().email().max(200),
@@ -20,7 +21,7 @@ const input = z
 export async function POST(request: Request) {
   try {
     checkOrigin(request);
-    const data = input.parse(await request.json());
+    const data = input.parse(await readJson(request, 4096));
     await rateLimit('login:' + data.email.toLowerCase(), 8);
     const user = await db.user.findUnique({ where: { email: data.email.toLowerCase() } });
     const valid = await bcrypt.compare(
@@ -53,7 +54,9 @@ export async function POST(request: Request) {
     }
     if (
       process.env.DEMO_MODE !== 'true' &&
-      ['PLATFORM_ADMIN', 'CLINIC_ADMIN'].includes(user.role) &&
+      ['PLATFORM_ADMIN', 'CLINIC_ADMIN', 'CONTENT_REVIEWER', 'SUPPORT_PARTNER'].includes(
+        user.role,
+      ) &&
       !user.mfaEnabled
     )
       throw new AppError(

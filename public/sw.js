@@ -1,8 +1,13 @@
-const CACHE = 'np-safe-shell-v2';
+const CACHE = 'np-safe-shell-v6-safeher-reviewed';
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE).then(async (cache) => {
-      await cache.addAll(['/offline', '/brand/mark.svg', '/manifest.webmanifest']);
+      await cache.addAll([
+        '/offline',
+        '/brand/safeher.svg',
+        '/manifest.webmanifest',
+        '/fonts/inter-latin.woff2',
+      ]);
       const shell = await cache.match('/offline');
       const html = shell ? await shell.text() : '';
       // Prefetch only same-origin build assets required to hydrate the public offline shell.
@@ -48,6 +53,7 @@ self.addEventListener('fetch', (event) => {
   if (
     url.pathname.startsWith('/_next/static/') ||
     url.pathname.startsWith('/brand/') ||
+    url.pathname.startsWith('/fonts/') ||
     url.pathname === '/manifest.webmanifest'
   ) {
     event.respondWith(

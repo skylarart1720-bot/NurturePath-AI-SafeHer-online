@@ -1,12 +1,14 @@
 import Link from 'next/link';
+import { SafeherPage } from '@/components/safeher-page';
 export default function NotFound() {
   return (
-    <main id="main" className="legal">
-      <h1>That path is unavailable</h1>
-      <p>Return to the public site or sign in to your assigned workspace.</p>
-      <Link href="/login" className="button">
-        Go to sign in
+    <SafeherPage
+      title="That path is unavailable."
+      intro="This resource may be unpublished, or the page may have moved."
+    >
+      <Link href="/learn" className="button">
+        Explore learning resources
       </Link>
-    </main>
+    </SafeherPage>
   );
 }

@@ -1,5 +1,7 @@
 # Continuation checkpoint
 
+Current SafeHer continuation: [13 October implementation report](SAFEHER-IMPLEMENTATION-2026-10-13.md), [operations](SAFEHER-OPERATIONS.md), and [Vercel handoff](SAFEHER-VERCEL.md). The checkpoint below preserves the earlier maternal application history.
+
 Requirements: the overview, MVP, and production PDFs in the repository root were read. Initial code contained the Prisma schema and six library helpers only. Existing foundation was preserved.
 
 Implemented: responsive public/legal pages; original brand/PWA assets; database migration; idempotent fictional seed; role-aware worker/clinic/admin/auditor workspaces; three-step adult enrolment/consent; appointment/follow-up/referral workflow; audited scoped APIs; contact encryption/key versions; neutral simulator; deterministic approved-source draft/review; encrypted actor-bound offline queue with replay/version checks; MFA setup/sign-in and one-use codes; staff/facility management; CI; standalone/container packaging; encrypted local backup/restore; documentation and screenshots.
