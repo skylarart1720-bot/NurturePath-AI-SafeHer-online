@@ -18,7 +18,7 @@ const request = (
     body: JSON.stringify(body),
   });
 describe('SafeHer database and public API', () => {
-  it('returns the four sourced real contacts with evidence and no partner assignment', async () => {
+  it('returns the sourced real contacts with evidence and no partner assignment', async () => {
     const res = await GET(
       new Request('http://localhost/api/safeher/directory'),
       context('directory'),
@@ -55,7 +55,9 @@ describe('SafeHer database and public API', () => {
     expect(data.mode).toContain('extractive');
   });
   it('returns static guidance without an external call when the rate-limit database is unavailable', async () => {
-    const query = vi.spyOn(db, '$queryRaw').mockRejectedValueOnce(new Error('Synthetic database outage'));
+    const query = vi
+      .spyOn(db, '$queryRaw')
+      .mockRejectedValueOnce(new Error('Synthetic database outage'));
     try {
       const res = await POST(request('ask', { question: 'What is consent?' }), context('ask'));
       expect(res.status).toBe(200);
@@ -64,7 +66,9 @@ describe('SafeHer database and public API', () => {
       expect(data.sources).toEqual([]);
       expect(data.text).toContain('do not have approved information');
       expect(query).toHaveBeenCalledTimes(1);
-    } finally { query.mockRestore(); }
+    } finally {
+      query.mockRestore();
+    }
   });
   it('validates input and rejects extra sensitive fields', async () => {
     const res = await POST(
@@ -84,18 +88,14 @@ describe('SafeHer database and public API', () => {
     const res = await POST(request('referrals', {}), context('referrals'));
     expect(res.status).toBe(403);
   });
-  it('returns synthetic directory entries without verified claims', async () => {
+  it('excludes synthetic entries from the public directory', async () => {
     const res = await GET(
       new Request('http://localhost/api/safeher/directory'),
       context('directory'),
     );
     const { data } = await res.json();
-    expect(data.length).toBeGreaterThanOrEqual(7);
-    expect(
-      data
-        .filter((x: { synthetic: boolean }) => x.synthetic)
-        .every((x: { verifiedAt: null; contactUrl: null }) => !x.verifiedAt && !x.contactUrl),
-    ).toBe(true);
+    expect(data.length).toBeGreaterThanOrEqual(ghanaDirectorySources.length);
+    expect(data.every((x: { synthetic: boolean }) => x.synthetic === false)).toBe(true);
   });
   it('supports deletion cascade without affecting another account', async () => {
     const org = await db.organization.findUniqueOrThrow({ where: { id: 'safeher-demo-org' } });

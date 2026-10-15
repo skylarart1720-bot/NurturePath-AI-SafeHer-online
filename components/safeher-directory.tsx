@@ -19,7 +19,6 @@ export function VerifiedDirectory() {
   const [category, setCategory] = useState('All services');
   const [access, setAccess] = useState('Any access');
   const [accessibility, setAccessibility] = useState('Any accessibility');
-  const [includeExamples, setIncludeExamples] = useState(false);
   const [selected, setSelected] = useState<DirectoryEntry | null>(null);
   const [consent, setConsent] = useState(false);
   const [ready, setReady] = useState(false);
@@ -35,7 +34,6 @@ export function VerifiedDirectory() {
     region,
     category,
     access,
-    includeExamples,
     accessibility,
   });
   const categories = ['All services', ...new Set(items.flatMap(entryCategories))];
@@ -133,21 +131,6 @@ export function VerifiedDirectory() {
         Ghana-wide enquiry contacts remain visible when you select a region. Ask the provider to
         confirm services near you. These contacts are not a guarantee of emergency assistance.
       </p>
-      <details className="sh-directory-options">
-        <summary>Directory display options</summary>
-        <label className="sh-option">
-          <input
-            type="checkbox"
-            checked={includeExamples}
-            onChange={(e) => setIncludeExamples(e.target.checked)}
-          />{' '}
-          Include synthetic examples
-        </label>
-        <p className="sh-small">
-          Examples are preserved for evaluation. They are fictional and cannot receive a call or
-          referral.
-        </p>
-      </details>
       {loading && <p role="status">Loading support information…</p>}
       {error && (
         <div className="error" role="alert">

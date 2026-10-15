@@ -49,15 +49,14 @@ export function filterDirectory(
     region: string;
     category: string;
     access: string;
-    includeExamples: boolean;
+    includeExamples?: boolean;
     accessibility?: string;
   },
   now = new Date(),
 ) {
   return entries.filter((entry) => {
     if (entry.publicationStatus && entry.publicationStatus !== 'PUBLISHED') return false;
-    if (entry.synthetic ? !filters.includeExamples : !currentDirectoryCheck(entry, now))
-      return false;
+    if (!currentDirectoryCheck(entry, now)) return false;
     const search = [entry.name, entry.description, ...entryCategories(entry)]
       .join(' ')
       .toLowerCase();

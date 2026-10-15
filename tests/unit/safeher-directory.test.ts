@@ -5,7 +5,7 @@ import {
   filterDirectory,
   type DirectoryEntry,
 } from '../../lib/safeher-directory';
-const now = new Date('2026-10-12T12:00:00Z');
+const now = new Date('2026-10-14T12:00:00Z');
 const filters = {
   query: '',
   region: 'All regions',
@@ -14,8 +14,8 @@ const filters = {
   includeExamples: false,
 };
 describe('Public-source Ghana directory', () => {
-  it('has four real organisations with dated primary sources and published contacts', () => {
-    expect(ghanaDirectorySources).toHaveLength(4);
+  it('has six real organisations with dated primary sources and published contacts', () => {
+    expect(ghanaDirectorySources).toHaveLength(6);
     for (const entry of ghanaDirectorySources) {
       expect(entry.synthetic).toBe(false);
       expect(entry.verifiedAt).toBe(ghanaDirectoryCheckedAt);
@@ -29,7 +29,7 @@ describe('Public-source Ghana directory', () => {
     const fake = { ...ghanaDirectorySources[0], synthetic: true };
     expect(currentDirectoryCheck(fake, now)).toBe(false);
     expect(filterDirectory([fake], filters, now)).toEqual([]);
-    expect(filterDirectory([fake], { ...filters, includeExamples: true }, now)).toHaveLength(1);
+    expect(filterDirectory([fake], { ...filters, includeExamples: true }, now)).toHaveLength(0);
   });
   it('hides expired, future-dated, and unsourced entries', () => {
     for (const altered of [
@@ -51,7 +51,7 @@ describe('Public-source Ghana directory', () => {
         { ...filters, category: 'GBV response', region: 'Ashanti' },
         now,
       ).map((e) => e.id),
-    ).toEqual(['safeher-gh-helpline-of-hope']);
+    ).toEqual(['safeher-gh-dovvsu', 'safeher-gh-helpline-of-hope']);
     expect(
       filterDirectory(
         ghanaDirectorySources,
@@ -61,12 +61,12 @@ describe('Public-source Ghana directory', () => {
     ).toHaveLength(2);
     expect(
       filterDirectory(ghanaDirectorySources, { ...filters, access: 'Online' }, now),
-    ).toHaveLength(4);
+    ).toHaveLength(6);
     expect(
       filterDirectory(ghanaDirectorySources, { ...filters, access: 'In person' }, now),
     ).toHaveLength(0);
   });
-  it('preserves examples without mixing them into the default directory', () => {
+  it('excludes examples even when a legacy client requests them', () => {
     const fake: DirectoryEntry = {
       ...ghanaDirectorySources[0],
       id: 'synthetic',
@@ -77,9 +77,9 @@ describe('Public-source Ghana directory', () => {
       verificationSource: null,
       contactPhone: null,
     };
-    expect(filterDirectory([...ghanaDirectorySources, fake], filters, now)).toHaveLength(4);
+    expect(filterDirectory([...ghanaDirectorySources, fake], filters, now)).toHaveLength(6);
     expect(
       filterDirectory([...ghanaDirectorySources, fake], { ...filters, includeExamples: true }, now),
-    ).toHaveLength(5);
+    ).toHaveLength(6);
   });
 });

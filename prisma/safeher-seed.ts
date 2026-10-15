@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import bcrypt from 'bcryptjs';
 import { db } from '../lib/db';
-import { lessons, syntheticServices } from '../lib/safeher';
+import { lessons } from '../lib/safeher';
 if (process.env.DEMO_MODE !== 'true')
   throw new Error('SafeHer synthetic seed requires DEMO_MODE=true');
 const password = process.env.SAFEHER_DEMO_PASSWORD ?? process.env.DEMO_PASSWORD;
@@ -65,8 +65,6 @@ try {
       },
     });
   }
-  for (const service of syntheticServices)
-    await db.safeherService.upsert({ where: { id: service.id }, update: {}, create: service });
   const organization = await db.organization.upsert({
     where: { id: 'safeher-demo-org' },
     update: {},

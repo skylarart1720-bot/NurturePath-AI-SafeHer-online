@@ -1,8 +1,55 @@
 import type { DirectoryEntry } from './safeher-directory';
-export const ghanaDirectoryCheckedAt = '2026-10-12T00:00:00.000Z';
+export const ghanaDirectoryCheckedAt = '2026-10-14T00:00:00.000Z';
 // A dated human-readable evidence snapshot, not an automatic claim of live availability.
 // Recheck original sources before advancing this date. No provider has been contacted.
 export const ghanaDirectorySources: DirectoryEntry[] = [
+  {
+    id: 'safeher-gh-dovvsu',
+    name: 'Domestic Violence and Victim Support Unit (DOVVSU)',
+    description:
+      'Ghana Police unit handling domestic violence, gender-based violence and child abuse reports, with links to medical and specialist support.',
+    region: 'Ghana-wide enquiries',
+    category: 'GBV response',
+    serviceCategories: ['Child protection'],
+    accessMethod: 'Telephone',
+    accessMethods: ['Telephone', 'Online'],
+    eligibility:
+      'For enquiries about domestic violence and abuse. This is a police reporting service; ask about investigations, safeguarding duties and what information is recorded before disclosing details.',
+    hours: null,
+    contactPhone: '0551000900',
+    contactEmail: null,
+    contactUrl: 'https://police.gov.gh/en/index.php/domestic-violence-victims-support-unit-dovvsu/',
+    verificationSource:
+      'https://police.gov.gh/en/index.php/domestic-violence-victims-support-unit-dovvsu/',
+    verifiedAt: ghanaDirectoryCheckedAt,
+    verificationMethod: 'OFFICIAL_PUBLICATION',
+    synthetic: false,
+    referralInstructions:
+      'The Ghana Police website publishes 0551000900 as the DOVVSU helpline. Contact the unit yourself if safe and ask about the nearest appropriate office. Reporting may lead to investigation. No report or personal details are sent by SafeHer.',
+  },
+  {
+    id: 'safeher-gh-legal-aid',
+    name: 'Legal Aid Commission Ghana',
+    description:
+      'Public legal aid enquiries and regional office contacts. Ask the Commission whether your matter qualifies for assistance and which office can help.',
+    region: 'Ghana-wide enquiries',
+    category: 'Legal assistance',
+    serviceCategories: [],
+    accessMethod: 'Telephone',
+    accessMethods: ['Telephone', 'Online'],
+    eligibility:
+      'Contact the Commission to confirm eligibility, any financial assessment, documents required and the relevant regional office. Assistance or representation is not guaranteed by this listing.',
+    hours: 'Head office publishes Monday–Friday, 8:00am–4:00pm; confirm before visiting.',
+    contactPhone: '0302975749',
+    contactEmail: 'info@lac.gov.gh',
+    contactUrl: 'https://www.lac.gov.gh/contact-us/',
+    verificationSource: 'https://www.lac.gov.gh/contact-us/',
+    verifiedAt: ghanaDirectoryCheckedAt,
+    verificationMethod: 'OFFICIAL_PUBLICATION',
+    synthetic: false,
+    referralInstructions:
+      'Call the published head-office number or use the official contact page to find regional offices. Ask about eligibility and confidentiality before sending case documents. SafeHer does not provide legal representation or send your information.',
+  },
   {
     id: 'safeher-gh-msi',
     name: 'MSI Reproductive Choices Ghana',

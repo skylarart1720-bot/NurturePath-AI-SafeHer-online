@@ -123,17 +123,12 @@ async function handle(request: Request, context: Context) {
     return response(
       await db.safeherService.findMany({
         where: {
-          OR: [
-            { synthetic: true, publicationStatus: 'PUBLISHED' },
-            {
-              synthetic: false,
-              publicationStatus: 'PUBLISHED',
-              reviewExpiresAt: { gt: new Date() },
-              verifiedAt: { lte: new Date(), gte: new Date(Date.now() - 180 * 86400000) },
-              contactUrl: { not: null },
-              verificationSource: { not: null },
-            },
-          ],
+          synthetic: false,
+          publicationStatus: 'PUBLISHED',
+          reviewExpiresAt: { gt: new Date() },
+          verifiedAt: { lte: new Date(), gte: new Date(Date.now() - 180 * 86400000) },
+          contactUrl: { not: null },
+          verificationSource: { not: null },
         },
         orderBy: { name: 'asc' },
         select: {

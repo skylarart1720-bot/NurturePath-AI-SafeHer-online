@@ -71,22 +71,21 @@ test('harassment, consent and child marriage journeys use attributed sources', a
   await page.getByRole('button', { name: 'Check answer' }).click();
   await expect(page.getByRole('status').filter({ hasText: 'That’s right' })).toBeVisible();
 });
-test('directory filtering and consent guidance never imply live synthetic services', async ({
+test('directory filtering exposes only real services with deliberate contact guidance', async ({
   page,
 }) => {
   await page.goto('/find-support');
-  await page.getByText('Directory display options', { exact: true }).click();
-  await page.getByLabel('Include synthetic examples').check();
-  await page.getByLabel('Search organizations').fill('Example Reproductive healthcare Centre');
+  await expect(page.getByLabel('Include synthetic examples')).toHaveCount(0);
+  await page.getByLabel('Search organizations').fill('MSI Reproductive Choices Ghana');
   await page.getByLabel('Service category').selectOption('Reproductive healthcare');
   await expect(page.getByText('1 matching entries')).toBeVisible();
-  await expect(page.getByText('SYNTHETIC EXAMPLE', { exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'View manual support steps' }).click();
+  await expect(page.getByText('SYNTHETIC EXAMPLE', { exact: true })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Review contact options' }).click();
   await expect(page.getByRole('button', { name: 'Continue to guidance' })).toBeDisabled();
   await page.getByLabel('I understand these limitations').check();
   await page.getByRole('button', { name: 'Continue to guidance' }).click();
   await expect(
-    page.getByRole('status').filter({ hasText: 'No contact is available' }),
+    page.getByRole('status').filter({ hasText: 'Nothing has been sent by SafeHer' }),
   ).toBeVisible();
   await page.getByRole('button', { name: 'Cancel', exact: true }).click();
   await expect(page.getByRole('heading', { name: /your next steps/ })).toHaveCount(0);

@@ -27,7 +27,7 @@ test('public pages pass automated accessibility checks', async ({ page }) => {
     '/login',
   ]) {
     await page.goto(path);
-    if (path === '/find-support') await expect(page.getByText('4 matching entries')).toBeVisible();
+    if (path === '/find-support') await expect(page.getByText('6 matching entries')).toBeVisible();
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
       .analyze();

@@ -5,7 +5,8 @@ test('real Ghanaian contacts are traceable and require a deliberate contact choi
   page,
 }, testInfo) => {
   await page.goto('/find-support');
-  await expect(page.getByText('4 matching entries')).toBeVisible();
+  await expect(page.getByText('6 matching entries')).toBeVisible();
+  await expect(page.getByLabel('Include synthetic examples')).toHaveCount(0);
   mkdirSync('docs/screenshots', { recursive: true });
   await page.evaluate(() => document.fonts.ready);
   await page.screenshot({
@@ -47,7 +48,7 @@ test('real Ghanaian contacts are traceable and require a deliberate contact choi
   await page.getByRole('button', { name: 'Cancel', exact: true }).click();
   await expect(page.getByRole('heading', { name: /your next steps/ })).toHaveCount(0);
   await page.getByLabel('Service category').selectOption('GBV response');
-  await expect(page.getByText('1 matching entries')).toBeVisible();
+  await expect(page.getByText('2 matching entries')).toBeVisible();
   await expect(
     page.getByRole('heading', {
       name: 'Helpline of Hope — Ministry of Gender, Children and Social Protection',
