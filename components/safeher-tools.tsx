@@ -6,6 +6,7 @@ import { type Lesson } from '@/lib/safeher-content';
 import { api } from '@/lib/safeher-client';
 import type { GroundedAnswer } from '@/lib/safeher-assistant';
 import { usableDownload, reconcileDownloads } from '@/lib/safeher-downloads';
+import { matchingLessons, readingMinutes } from '@/lib/safeher-learning';
 export { api };
 export function AskSafeher() {
   const [question, setQuestion] = useState('');
@@ -242,44 +243,130 @@ export function AskSafeher() {
 }
 export function LearningHub({ items }: { items: Lesson[] }) {
   const [filter, setFilter] = useState('All topics');
+  const [query, setQuery] = useState('');
   const categories = ['All topics', ...new Set(items.map((l) => l.category))];
+  const visible = matchingLessons(items, filter, query);
+  const starter = items.find((lesson) => lesson.slug === 'consent') ?? items[0];
   return (
     <>
-      <div className="sh-tabs" aria-label="Filter learning topics">
-        {categories.map((c) => (
-          <button
-            key={c}
-            className={filter === c ? '' : 'secondary'}
-            aria-pressed={filter === c}
-            onClick={() => setFilter(c)}
-          >
-            {c}
-          </button>
-        ))}
-      </div>
-      <div className="sh-grid">
-        {items
-          .filter((l) => filter === 'All topics' || l.category === filter)
-          .map((l, i) => (
+      {starter && (
+        <section className="sh-learning-welcome" aria-labelledby="learning-start">
+          <div>
+            <span className="sh-eyebrow">A GOOD PLACE TO BEGIN</span>
+            <h2 id="learning-start">Small lessons. More confidence.</h2>
+            <p>
+              Start with {starter.title.toLowerCase()}, or choose a topic below. Read, reflect, and
+              take your next step at your own pace.
+            </p>
+            <Link className="button" href={'/learn/' + starter.slug}>
+              Start with this lesson <ArrowRight size={17} aria-hidden="true" />
+            </Link>
+          </div>
+          <ol className="sh-learning-steps">
+            <li>
+              <strong>01 · Read</strong>
+              <span>Clear information with source references</span>
+            </li>
+            <li>
+              <strong>02 · Reflect</strong>
+              <span>A short question with an explanation</span>
+            </li>
+            <li>
+              <strong>03 · Keep learning</strong>
+              <span>Explore a related lesson or save a copy</span>
+            </li>
+          </ol>
+        </section>
+      )}
+      <section className="sh-learning-browser" aria-labelledby="browse-lessons">
+        <div className="sh-learning-toolbar">
+          <div>
+            <h2 id="browse-lessons">Find a lesson for you</h2>
+            <p>No account needed. Choose what matters to you.</p>
+          </div>
+          <div className="sh-learning-search">
+            <label htmlFor="lesson-search">Search lessons</label>
+            <input
+              id="lesson-search"
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Try consent, privacy, or support"
+              maxLength={120}
+            />
+          </div>
+        </div>
+        <div className="sh-tabs" role="group" aria-label="Filter learning topics">
+          {categories.map((c) => (
+            <button
+              key={c}
+              className={filter === c ? '' : 'secondary'}
+              aria-pressed={filter === c}
+              onClick={() => setFilter(c)}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+        <p className="sh-small" role="status" aria-atomic="true">
+          {visible.length} {visible.length === 1 ? 'lesson' : 'lessons'}
+          {filter !== 'All topics' ? ` in ${filter}` : ' available'}
+          {query.trim() ? ` matching “${query.trim()}”` : ''}
+        </p>
+        <div className="sh-grid">
+          {visible.map((l) => (
             <Link href={'/learn/' + l.slug} className="sh-feature" key={l.slug}>
               <div className="sh-lesson-top">
                 <span className="sh-feature-icon mint">
                   <BookOpen size={23} />
                 </span>
-                <small>LESSON {String(i + 1).padStart(2, '0')}</small>
+                <small>{readingMinutes(l)} min read · 1 question</small>
               </div>
               <span className="sh-eyebrow">{l.category}</span>
               <h2>{l.title}</h2>
               <p>{l.summary}</p>
               <span className="sh-card-link">
-                Start learning · 3 min <ArrowRight size={16} />
+                Start learning <ArrowRight size={16} aria-hidden="true" />
               </span>
             </Link>
           ))}
-      </div>
-      {items.length === 0 && (
-        <p className="notice">No published resources are available. Please try again later.</p>
-      )}
+        </div>
+        {items.length === 0 && (
+          <p className="notice">No published resources are available. Please try again later.</p>
+        )}
+        {items.length > 0 && visible.length === 0 && (
+          <div className="sh-learning-empty">
+            <h3>No lessons match yet</h3>
+            <p>Try a shorter search or explore all topics.</p>
+            <button
+              className="secondary"
+              onClick={() => {
+                setQuery('');
+                setFilter('All topics');
+              }}
+            >
+              Clear search and filters
+            </button>
+          </div>
+        )}
+      </section>
+      <aside className="sh-learning-help">
+        <div>
+          <h2>Have a question or need support?</h2>
+          <p>
+            Explore a general question with SafeHer or find public contact details for organisations
+            in Ghana.
+          </p>
+        </div>
+        <div className="sh-actions">
+          <Link href="/ask-safeher" className="button secondary">
+            Ask SafeHer
+          </Link>
+          <Link href="/find-support" className="button secondary">
+            Find support
+          </Link>
+        </div>
+      </aside>
       <SavedResources />
     </>
   );
@@ -302,13 +389,18 @@ export function LessonActions({ lesson }: { lesson: Lesson }) {
   const [checked, setChecked] = useState(false);
   const [message, setMessage] = useState('');
   const [saved, setSaved] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const completing = useRef(false);
   useEffect(() => {
     queueMicrotask(() => setSaved(readSaved().some((l) => l.slug === lesson.slug)));
     api('metrics', { event: 'resource_access' }).catch(() => {});
   }, [lesson.slug]);
   async function complete() {
+    if (choice === null || completing.current) return;
     setChecked(true);
     if (choice !== lesson.correct) return;
+    completing.current = true;
+    setBusy(true);
     setMessage('Lesson completed. Progress is not saved on this device.');
     try {
       const me = await api('me');
@@ -319,6 +411,9 @@ export function LessonActions({ lesson }: { lesson: Lesson }) {
       await api('metrics', { event: 'module_complete' });
     } catch {
       setMessage('Lesson completed. Account progress could not be saved.');
+    } finally {
+      completing.current = false;
+      setBusy(false);
     }
   }
   function download() {
@@ -339,9 +434,10 @@ export function LessonActions({ lesson }: { lesson: Lesson }) {
   }
   return (
     <>
-      <section className="sh-quiz">
+      <section className="sh-quiz" id="lesson-reflection" aria-labelledby="reflection-title">
         <div className="sh-eyebrow">A MOMENT TO REFLECT</div>
-        <h2>Check your understanding</h2>
+        <h2 id="reflection-title">Check your understanding</h2>
+        <p>Choose an answer, then check the explanation. You can try again.</p>
         <fieldset>
           <legend>{lesson.question}</legend>
           {lesson.answers.map((a, i) => (
@@ -349,18 +445,21 @@ export function LessonActions({ lesson }: { lesson: Lesson }) {
               <input
                 type="radio"
                 name="quiz"
+                disabled={busy}
                 checked={choice === i}
                 onChange={() => {
                   setChoice(i);
                   setChecked(false);
+                  setMessage('');
                 }}
               />
               {a}
             </label>
           ))}
         </fieldset>
-        <button disabled={choice === null} onClick={complete}>
-          Check answer <CheckCircle size={16} />
+        <button disabled={choice === null || busy} onClick={complete}>
+          {busy ? 'Saving completion…' : 'Check answer'}{' '}
+          <CheckCircle size={16} aria-hidden="true" />
         </button>
         {checked && (
           <p role="status">
@@ -374,6 +473,10 @@ export function LessonActions({ lesson }: { lesson: Lesson }) {
           {saved ? 'Update saved resource' : 'Save for offline reading'}
         </button>
       </div>
+      <p className="sh-small">
+        Reading and quizzes are free without an account. Signed-in learners can save completion to
+        their account. Offline copies are stored separately in this browser.
+      </p>
       {message && (
         <p role="status" className="notice">
           {message}
