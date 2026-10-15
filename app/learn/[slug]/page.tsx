@@ -39,7 +39,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         <div className="sh-sources">
           <strong>Source reference</strong>
           <p>
-            <a href={lesson.source} target="_blank" rel="noreferrer">
+            <a href={lesson.source} rel="noreferrer">
               {lesson.sourceName}
             </a>
           </p>

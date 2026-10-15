@@ -177,7 +177,7 @@ export function VerifiedDirectory() {
             </dl>
             {!entry.synthetic && (
               <div className="sh-provider-evidence">
-                <a href={entry.verificationSource!} target="_blank" rel="noreferrer">
+                <a href={entry.verificationSource!} rel="noreferrer">
                   View the published source <ArrowUpRight size={14} aria-hidden="true" />
                 </a>
                 <small>
@@ -268,7 +268,6 @@ export function VerifiedDirectory() {
                     <a
                       className="button secondary"
                       href={selected.contactUrl!}
-                      target="_blank"
                       rel="noreferrer"
                     >
                       Provider contact page <ArrowUpRight size={16} aria-hidden="true" />

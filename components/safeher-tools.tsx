@@ -68,7 +68,7 @@ export function AskSafeher() {
               <strong>Sources & related learning</strong>
               {answer.sources.map((source) => (
                 <p key={source.slug}>
-                  <a href={source.url} target="_blank" rel="noreferrer">
+                  <a href={source.url} rel="noreferrer">
                     {source.title}
                   </a>{' '}
                   · <Link href={'/learn/' + source.slug}>Read lesson</Link>
