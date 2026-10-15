@@ -1,6 +1,10 @@
 import { retrieve, type Lesson } from './safeher-content';
+import { answerSuggestions, supportCategories } from './safeher-question-matching';
 
-export type GroundedAnswer = ReturnType<typeof retrieve>;
+export type GroundedAnswer = ReturnType<typeof retrieve> & {
+  followUps: string[];
+  supportCategories: string[];
+};
 export interface SafeherAdapter {
   answer(context: { excerpts: string; sources: GroundedAnswer['sources'] }): Promise<string>;
 }
@@ -10,7 +14,18 @@ export async function answerQuestion(
   corpus: Lesson[],
   adapter?: SafeherAdapter,
 ): Promise<GroundedAnswer> {
-  const grounded = retrieve(question, corpus);
+  const result = retrieve(question, corpus);
+  const slugs = result.sources.map((source) => source.slug);
+  const grounded = {
+    ...result,
+    followUps:
+      result.status === 'guidance' || result.status === 'unavailable'
+        ? []
+        : answerSuggestions(slugs, corpus).filter(
+            (suggestion) => suggestion.toLowerCase() !== question.trim().toLowerCase(),
+          ),
+    supportCategories: supportCategories(slugs),
+  };
   if (!grounded.found || !adapter || process.env.SAFEHER_AI_VENDOR_APPROVED !== 'true')
     return grounded;
   try {

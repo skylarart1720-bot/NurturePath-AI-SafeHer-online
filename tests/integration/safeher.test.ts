@@ -64,7 +64,7 @@ describe('SafeHer database and public API', () => {
       const { data } = await res.json();
       expect(data.found).toBe(false);
       expect(data.sources).toEqual([]);
-      expect(data.text).toContain('do not have approved information');
+      expect(data.text).toContain('temporarily unavailable');
       expect(query).toHaveBeenCalledTimes(1);
     } finally {
       query.mockRestore();

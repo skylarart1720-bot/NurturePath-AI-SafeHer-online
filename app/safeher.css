@@ -549,6 +549,46 @@
 .sh-sources p {
   margin: 7px 0;
 }
+.sh-answer-next {
+  border-top: 1px solid #dce7e1;
+  margin-top: 24px;
+  padding-top: 20px;
+}
+.sh-answer-next h4 {
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+.sh-answer-services {
+  list-style: none;
+  margin: 16px 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.sh-answer-services li {
+  background: #f0f7f4;
+  border: 1px solid #dce7e1;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-wrap: anywhere;
+}
+.sh-answer-services a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  text-decoration: underline;
+}
+.sh-answer:focus-visible {
+  outline: 3px solid #087e83;
+  outline-offset: 4px;
+}
+.sh-chat .text-button {
+  color: #076b70;
+}
 .sh-reading h2 {
   margin-top: 35px;
   font-size: 24px;

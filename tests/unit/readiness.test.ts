@@ -66,9 +66,7 @@ describe('assistant safety evaluations', () => {
     vi.unstubAllEnvs();
   });
   it('has useful static fallback without a database corpus', async () => {
-    expect((await answerQuestion('consent', [])).text).toContain(
-      'do not have approved information',
-    );
+    expect((await answerQuestion('consent', [])).text).toContain('temporarily unavailable');
   });
 });
 describe('offline review enforcement', () => {

@@ -1,3 +1,4 @@
+import { rankLessons } from './safeher-question-matching';
 export type Lesson = {
   slug: string;
   title: string;
@@ -254,7 +255,7 @@ export const lessons: Lesson[] = [
     explanation: 'Understanding how information is handled helps you make an informed choice.',
   },
 ];
-export function retrieve(question: string, approved: Lesson[]) {
+function safetyAnswer(question: string) {
   const normalized = question.normalize('NFKC').replace(/[\u200B-\u200D\uFEFF]/g, '');
   if (/kill myself|end my life|suicid|self[- ]?harm|hurt myself|overdose/i.test(normalized))
     return {
@@ -302,20 +303,26 @@ export function retrieve(question: string, approved: Lesson[]) {
       sources: [],
       found: false,
     };
-  const words: string[] = question.toLowerCase().match(/[a-z]+/g) ?? [];
-  const ranked = approved
-    .map((lesson) => ({
-      lesson,
-      score: lesson.keywords.filter((key) => words.includes(key)).length,
-    }))
-    .filter((x) => x.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 2);
-  if (!ranked.length)
+  return null;
+}
+export function retrieve(question: string, approved: Lesson[]) {
+  const safety = safetyAnswer(question);
+  if (safety) return { ...safety, status: 'guidance' as const };
+  if (!approved.length)
     return {
-      text: 'I do not have approved information to answer that question. You can explore the learning hub or ask a qualified healthcare or support professional. If you are in immediate danger, seek local emergency assistance if safe. SafeHer cannot send emergency help.',
+      text: 'Learning information is temporarily unavailable. Please try again shortly, or explore Find Support for published service contacts. SafeHer cannot send emergency help.',
       sources: [],
       found: false,
+      status: 'unavailable' as const,
+    };
+  const candidates = rankLessons(question, approved);
+  const ranked = candidates.filter((item) => item.score >= candidates[0].score * 0.65).slice(0, 2);
+  if (!ranked.length)
+    return {
+      text: 'I do not have approved information to answer that question yet. Are you asking about your rights, relationships, health, online safety, or finding support? Choose a suggested question below, or rephrase your question without personal details.',
+      sources: [],
+      found: false,
+      status: 'clarify' as const,
     };
   return {
     text: ranked.map((x) => x.lesson.paragraphs.join('\n\n')).join('\n\n'),
@@ -326,5 +333,6 @@ export function retrieve(question: string, approved: Lesson[]) {
       review: x.lesson.review,
     })),
     found: true,
+    status: 'matched' as const,
   };
 }

@@ -1,32 +1,52 @@
 'use client';
 import Link from 'next/link';
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { ArrowRight, Download, Send, CheckCircle, BookOpen, Trash2 } from 'lucide-react';
 import { type Lesson } from '@/lib/safeher-content';
 import { api } from '@/lib/safeher-client';
+import type { GroundedAnswer } from '@/lib/safeher-assistant';
 import { usableDownload, reconcileDownloads } from '@/lib/safeher-downloads';
 export { api };
 export function AskSafeher() {
   const [question, setQuestion] = useState('');
-  const [answer, setAnswer] = useState<{
-    text: string;
-    sources: { title: string; url: string; slug: string; review?: Lesson['review'] }[];
-  } | null>(null);
+  const [answer, setAnswer] = useState<
+    | (GroundedAnswer & {
+        supportContacts: {
+          id: string;
+          name: string;
+          category: string;
+          contactUrl: string | null;
+        }[];
+        supportUnavailable: boolean;
+      })
+    | null
+  >(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  async function submit(event: FormEvent) {
-    event.preventDefault();
+  const answerRef = useRef<HTMLElement>(null);
+  const questionRef = useRef<HTMLTextAreaElement>(null);
+  const lastQuestion = useRef('');
+  useEffect(() => {
+    if (answer) answerRef.current?.focus();
+  }, [answer]);
+  async function ask(prompt: string) {
+    if (busy || prompt.trim().length < 2) return;
+    lastQuestion.current = prompt;
     setBusy(true);
     setError('');
     setAnswer(null);
     try {
-      setAnswer(await api('ask', { question, locale: 'en' }));
+      setAnswer(await api('ask', { question: prompt, locale: 'en' }));
       setQuestion('');
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Unable to connect.');
     } finally {
       setBusy(false);
     }
+  }
+  function submit(event: FormEvent) {
+    event.preventDefault();
+    void ask(question);
   }
   return (
     <div className="sh-chat">
@@ -47,22 +67,67 @@ export function AskSafeher() {
           'What is child marriage?',
           'How do I protect my account?',
         ].map((q) => (
-          <button className="secondary" key={q} onClick={() => setQuestion(q)}>
+          <button
+            className="secondary"
+            disabled={busy}
+            key={q}
+            onClick={() => {
+              setQuestion(q);
+              questionRef.current?.focus();
+            }}
+          >
             {q}
           </button>
         ))}
       </div>
+      <p className="sh-small" role="status" aria-atomic="true">
+        {busy
+          ? 'Looking for relevant learning information…'
+          : answer
+            ? 'Answer ready. You can explore its sources and suggested next steps.'
+            : ''}
+      </p>
       {error && (
         <p role="alert" className="error">
-          {error}
+          {error}{' '}
+          <button
+            className="text-button"
+            disabled={busy}
+            onClick={() => void ask(lastQuestion.current)}
+          >
+            Try again
+          </button>
         </p>
       )}
       {answer && (
-        <article className="sh-answer" aria-live="polite">
-          <h3>A starting point from SafeHer</h3>
+        <article className="sh-answer" ref={answerRef} tabIndex={-1} aria-label="SafeHer answer">
+          <h3>
+            {answer.status === 'clarify'
+              ? 'Let’s find the right topic'
+              : answer.status === 'unavailable'
+                ? 'Learning information is unavailable'
+                : answer.status === 'guidance'
+                  ? 'Support and safety guidance'
+                  : 'A starting point from SafeHer'}
+          </h3>
           {answer.text.split('\n\n').map((p, i) => (
             <p key={i}>{p}</p>
           ))}
+          {answer.status === 'unavailable' && (
+            <button
+              className="secondary"
+              disabled={busy}
+              onClick={() => void ask(lastQuestion.current)}
+            >
+              Try again
+            </button>
+          )}
+          {answer.status === 'clarify' && (
+            <p>
+              <Link href="/learn">Explore all learning topics</Link> ·{' '}
+              <Link href="/find-support">Find a support service</Link>
+            </p>
+          )}
           {answer.sources.length > 0 && (
             <div className="sh-sources">
               <strong>Sources & related learning</strong>
@@ -87,7 +152,63 @@ export function AskSafeher() {
               ))}
             </div>
           )}
-          <button className="text-button" onClick={() => setAnswer(null)}>
+          {!!answer.followUps?.length && (
+            <section className="sh-answer-next" aria-label="Suggested follow-up questions">
+              <h4>{answer.found ? 'You could ask next' : 'Try a question about these topics'}</h4>
+              <div className="sh-suggestions">
+                {answer.followUps.map((prompt) => (
+                  <button
+                    className="secondary"
+                    key={prompt}
+                    disabled={busy}
+                    onClick={() => void ask(prompt)}
+                  >
+                    {prompt}
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
+          {!!answer.supportContacts?.length && (
+            <section className="sh-answer-next" aria-label="Related support services">
+              <h4>Support services related to this topic</h4>
+              <p className="sh-small">
+                Official public contacts. Confirm availability and confidentiality with the
+                provider. SafeHer does not send your question or contact anyone for you.
+              </p>
+              <ul className="sh-answer-services">
+                {answer.supportContacts.map((contact) => (
+                  <li key={contact.id}>
+                    <strong>{contact.name}</strong>
+                    <span className="sh-small">{contact.category}</span>
+                    <a href={contact.contactUrl!} rel="noreferrer">
+                      Official contact page <ArrowRight size={14} aria-hidden="true" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <Link href="/find-support">Review service details and contact options</Link>
+            </section>
+          )}
+          {answer.supportUnavailable && (
+            <p className="sh-small">
+              Related contacts could not load.{' '}
+              <Link href="/find-support">Try the support directory</Link>.
+            </p>
+          )}
+          {answer.status === 'guidance' && (
+            <p>
+              <Link href="/find-support">Explore local support services</Link>
+            </p>
+          )}
+          <button
+            className="text-button"
+            onClick={() => {
+              setAnswer(null);
+              lastQuestion.current = '';
+              questionRef.current?.focus();
+            }}
+          >
             Clear this answer
           </button>
         </article>
@@ -96,6 +217,8 @@ export function AskSafeher() {
         <label htmlFor="question">Your question</label>
         <textarea
           id="question"
+          ref={questionRef}
+          disabled={busy}
           required
           minLength={2}
           maxLength={1000}

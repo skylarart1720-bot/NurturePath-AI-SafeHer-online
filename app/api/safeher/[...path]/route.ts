@@ -16,6 +16,7 @@ import {
 import { cookies } from 'next/headers';
 import { AppError } from '@/lib/permissions';
 import { approvedLessons, authorizeSafeher, metric, reportCount } from '@/lib/safeher';
+import { currentDirectoryCheck } from '@/lib/safeher-directory';
 const lessonSchema = z
   .object({
     slug: z
@@ -171,10 +172,45 @@ async function handle(request: Request, context: Context) {
         databaseUnavailable = true;
       }
     const answer = await answerQuestion(question, corpus, configuredAdapter());
+    let supportContacts: {
+      id: string;
+      name: string;
+      category: string;
+      contactUrl: string | null;
+    }[] = [];
+    let supportUnavailable = false;
+    if (answer.supportCategories.length && !databaseUnavailable) {
+      try {
+        const now = new Date();
+        const contacts = await db.safeherService.findMany({
+          where: {
+            synthetic: false,
+            publicationStatus: 'PUBLISHED',
+            verifiedAt: { lte: now, gte: new Date(+now - 180 * 86400000) },
+            reviewExpiresAt: { gt: now },
+            contactUrl: { not: null },
+            verificationSource: { not: null },
+            OR: [
+              { category: { in: answer.supportCategories } },
+              { serviceCategories: { hasSome: answer.supportCategories } },
+            ],
+          },
+          orderBy: { name: 'asc' },
+          take: 3,
+        });
+        supportContacts = contacts
+          .filter((contact) => currentDirectoryCheck(contact))
+          .map(({ id, name, category, contactUrl }) => ({ id, name, category, contactUrl }));
+      } catch {
+        supportUnavailable = true;
+      }
+    }
     if (!databaseUnavailable)
       await metric(answer.found ? 'retrieval_success' : 'retrieval_unavailable').catch(() => {});
     return response({
       ...answer,
+      supportContacts,
+      supportUnavailable,
       mode: 'Source-grounded extractive assistance',
       reviewScope: process.env.DEMO_MODE === 'true' ? 'DEMO_ONLY' : 'PILOT_REVIEWED',
     });
