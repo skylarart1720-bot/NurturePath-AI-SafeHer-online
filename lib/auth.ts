@@ -3,6 +3,7 @@ import { hashToken, createSessionRecord, tokenVersionCurrent } from './session';
 export { hashToken } from './session';
 import { db } from './db';
 import { AppError, type Actor } from './permissions';
+export { checkOrigin } from './request-origin';
 export const sessionCookie = 'np_session';
 export async function currentActor(): Promise<Actor | null> {
   const token = (await cookies()).get(sessionCookie)?.value;
@@ -38,16 +39,11 @@ export async function createSession(userId: string, expectedVersion?: number) {
   const { token, expiresAt } = await createSessionRecord(userId, expectedVersion);
   (await cookies()).set(sessionCookie, token, {
     httpOnly: true,
-    secure: process.env.APP_URL?.startsWith('https://') ?? false,
+    secure: process.env.VERCEL === '1' || (process.env.APP_URL?.startsWith('https://') ?? false),
     sameSite: 'strict',
     path: '/',
     expires: expiresAt,
   });
-}
-export function checkOrigin(request: Request) {
-  const origin = request.headers.get('origin');
-  if (!origin || origin !== new URL(process.env.APP_URL ?? 'http://localhost:3200').origin)
-    throw new AppError(403, 'ORIGIN', 'Request origin is not allowed.');
 }
 export async function rateLimit(key: string, limit = 60) {
   const now = new Date();
