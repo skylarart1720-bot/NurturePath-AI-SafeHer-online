@@ -25,6 +25,7 @@ Open **http://localhost:3200**. Educational access needs no account. Optional sy
 ## Guides and verification
 
 - [Know Your Rights walkthrough and professional review handoff](docs/SAFEHER-LEARNING-REVIEW.md)
+- [Digital Safety walkthrough and review scope](docs/SAFEHER-DIGITAL-SAFETY.md)
 - [Review worksheets for all twelve learning modules](docs/SAFEHER-LEARNING-REVIEW-PACKET.md)
 
 - [Start here: Vercel hosting and continued development](docs/VERCEL-QUICKSTART.md)
