@@ -23,6 +23,39 @@ export type DirectoryEntry = {
   publicationStatus?: string;
 };
 export const directoryReviewDays = 180;
+export const supportStartingPoints = [
+  {
+    id: 'health',
+    title: 'Health support',
+    description: 'Healthcare and counselling information.',
+    categories: ['Reproductive healthcare', 'Counselling & mental health'],
+  },
+  {
+    id: 'safety',
+    title: 'Someone is hurting or threatening me',
+    description: 'Protection and support options.',
+    categories: ['GBV response', 'Child protection'],
+  },
+  {
+    id: 'legal',
+    title: 'Legal help',
+    description: 'Legal assistance and advice contacts.',
+    categories: ['Legal assistance'],
+  },
+  {
+    id: 'online',
+    title: 'Online safety',
+    description: 'Digital safety and reporting contacts.',
+    categories: ['Digital safety'],
+  },
+] as const;
+export const directoryReportReasons = [
+  'Wrong number or contact link',
+  'Service unavailable',
+  'Opening hours or eligibility incorrect',
+  'Accessibility information incorrect',
+  'Other listing details incorrect',
+] as const;
 export function currentDirectoryCheck(entry: DirectoryEntry, now = new Date()) {
   if (entry.publicationStatus && entry.publicationStatus !== 'PUBLISHED') return false;
   if (
@@ -51,6 +84,7 @@ export function filterDirectory(
     access: string;
     includeExamples?: boolean;
     accessibility?: string;
+    startingPoint?: string;
   },
   now = new Date(),
 ) {
@@ -61,6 +95,12 @@ export function filterDirectory(
       .join(' ')
       .toLowerCase();
     return (
+      (!filters.startingPoint ||
+        supportStartingPoints.some(
+          (point) =>
+            point.id === filters.startingPoint &&
+            point.categories.some((category) => entryCategories(entry).includes(category)),
+        )) &&
       search.includes(filters.query.trim().toLowerCase()) &&
       (!filters.accessibility ||
         filters.accessibility === 'Any accessibility' ||

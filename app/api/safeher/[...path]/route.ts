@@ -16,7 +16,7 @@ import {
 import { cookies } from 'next/headers';
 import { AppError } from '@/lib/permissions';
 import { approvedLessons, authorizeSafeher, metric, reportCount } from '@/lib/safeher';
-import { currentDirectoryCheck } from '@/lib/safeher-directory';
+import { currentDirectoryCheck, directoryReportReasons } from '@/lib/safeher-directory';
 const lessonSchema = z
   .object({
     slug: z
@@ -104,14 +104,21 @@ async function handle(request: Request, context: Context) {
       const { identity, identified } = await requestRateIdentity(request);
       await rateLimit(
         'safeher:' +
-          (['ask', 'metrics', 'feedback', 'referrals', 'progress', 'account', 'logout'].includes(
-            path,
-          )
+          ([
+            'ask',
+            'metrics',
+            'feedback',
+            'directory/report',
+            'referrals',
+            'progress',
+            'account',
+            'logout',
+          ].includes(path)
             ? path
             : 'staff') +
           ':' +
           createHash('sha256').update(identity).digest('hex'),
-        identified ? 60 : 600,
+        path === 'directory/report' ? (identified ? 10 : 60) : identified ? 60 : 600,
       );
     } catch (error) {
       if (path !== 'ask' || error instanceof AppError) throw error;
@@ -229,6 +236,29 @@ async function handle(request: Request, context: Context) {
       .parse(payload);
     await metric(event);
     return response({ recorded: true });
+  }
+  if (path === 'directory/report' && method === 'POST') {
+    const data = z
+      .object({ serviceId: z.string().min(1).max(100), reason: z.enum(directoryReportReasons) })
+      .strict()
+      .parse(payload);
+    const service = await db.safeherService.findFirst({
+      where: { id: data.serviceId, synthetic: false, publicationStatus: 'PUBLISHED' },
+      select: { id: true, name: true },
+    });
+    if (!service)
+      throw new AppError(
+        404,
+        'MISSING',
+        'This listing is no longer available. Reload the directory.',
+      );
+    await db.safeherFeedback.create({
+      data: {
+        category: `Service information · ${service.name} [${service.id}]`,
+        rating: data.reason,
+      },
+    });
+    return response({ recorded: true }, 202);
   }
   if (path === 'feedback' && method === 'POST') {
     const data = z

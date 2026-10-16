@@ -517,7 +517,7 @@ export function SafeherAdmin({ section }: { section?: 'content' | 'partners' | '
                 {!data.metrics.length && <p>No events yet.</p>}
               </section>
               <section className="sh-saved">
-                <h2>Accessibility & content feedback</h2>
+                <h2>Service information & content feedback</h2>
                 {data.feedback.map((f, i) => (
                   <p key={i}>
                     {f.category} · {f.rating}: {f._count}

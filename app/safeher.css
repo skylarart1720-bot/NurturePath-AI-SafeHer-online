@@ -612,6 +612,213 @@
   background: #f5f8f6;
   margin-bottom: 28px;
 }
+.sh-support-start {
+  margin: 12px 0 28px;
+}
+.sh-support-start h2,
+.sh-support-result-group h2,
+.sh-support-empty h2 {
+  color: #123047;
+}
+.sh-support-start > p {
+  margin-bottom: 24px;
+}
+.sh-support-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+.sh-support-shortcuts button.secondary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 12px;
+  padding: 22px;
+  border: 1px solid #cde4de;
+  background: #f5faf7;
+  color: #475569;
+  height: 100%;
+  border-radius: 14px;
+}
+.sh-support-shortcuts button strong {
+  color: #123047;
+  font-size: 17px;
+  line-height: 1.5;
+}
+.sh-support-shortcuts button span {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.7;
+}
+.sh-support-shortcuts button svg {
+  margin-top: auto;
+  color: #087e83;
+}
+.sh-support-shortcuts button[aria-pressed='true'] {
+  border-color: #087e83;
+  background: #e3f4ee;
+  box-shadow: inset 0 0 0 1px #087e83;
+}
+.sh-support-preparation {
+  margin: 26px 0;
+  border: 1px solid #d4e2de;
+  border-radius: 14px;
+  background: #f8faf8;
+  scroll-margin-top: 24px;
+}
+.sh-support-preparation > summary {
+  cursor: pointer;
+  padding: 22px;
+  font-weight: 600;
+  color: #123047;
+  min-height: 48px;
+}
+.sh-support-preparation summary span {
+  display: block;
+  font-size: 13px;
+  font-weight: 400;
+  padding: 8px 0 0 18px;
+  color: #475569;
+}
+.sh-support-preparation > div {
+  padding: 0 24px 24px;
+}
+.sh-filters.sh-support-filters {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+}
+.sh-support-filters label {
+  min-width: 0;
+}
+.sh-support-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 0;
+}
+.sh-support-filter-chips button {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.sh-support-filter-chips svg {
+  flex-shrink: 0;
+}
+.sh-support-result-group {
+  margin: 32px 0;
+}
+.sh-support-result-group > h2 {
+  font-size: 23px;
+  margin-bottom: 8px;
+}
+.sh-support-result-group > p {
+  margin-bottom: 22px;
+}
+.sh-provider-card h3 {
+  font-size: 21px;
+  color: #123047;
+  line-height: 1.4;
+}
+.sh-provider-card-open {
+  grid-column: 1 / -1;
+}
+.sh-support-check-date {
+  color: #375d51;
+  border-top: 1px solid #dce7e6;
+  padding-top: 14px;
+}
+.sh-support-provider-details {
+  margin: 6px 0 20px;
+  border-bottom: 1px solid #dce7e6;
+  padding-bottom: 12px;
+}
+.sh-support-provider-details > summary,
+.sh-support-report > summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 12px 0;
+  color: #076b70;
+  font-size: 13px;
+  font-weight: 600;
+}
+.sh-support-contact {
+  background: #f1f8f4;
+  border: 1px solid #cde4de;
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 20px;
+}
+.sh-support-contact h4 {
+  font-size: 21px;
+  color: #123047;
+  margin: 0 0 16px;
+}
+.sh-support-contact p {
+  max-width: 850px;
+}
+.sh-support-contact a:not(.button) {
+  text-decoration: underline;
+}
+.sh-support-contact .sh-actions {
+  flex-wrap: wrap;
+}
+.sh-support-contact a {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+.sh-support-report {
+  margin-top: 16px;
+  border-top: 1px solid #dce7e6;
+}
+.sh-support-report form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+}
+.sh-support-report label {
+  font-size: 13px;
+  font-weight: 600;
+}
+.sh-support-report select {
+  max-width: 100%;
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
+  border: 1px solid #a6bdb7;
+  border-radius: 8px;
+  padding: 10px;
+  color: #123047;
+  background: white;
+}
+.sh-support-empty {
+  padding: 28px;
+  border: 1px dashed #a6bdb7;
+  border-radius: 14px;
+  margin: 24px 0;
+}
+.sh-support-empty .sh-actions {
+  flex-wrap: wrap;
+}
+@media (max-width: 1000px) {
+  .sh-support-shortcuts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .sh-support-shortcuts,
+  .sh-filters.sh-support-filters {
+    grid-template-columns: 1fr;
+  }
+  .sh-support-contact {
+    padding: 18px;
+  }
+  .sh-support-preparation > div {
+    padding: 0 18px 20px;
+  }
+}
 .sh-digital-pause > svg {
   flex-shrink: 0;
   color: #087e83;

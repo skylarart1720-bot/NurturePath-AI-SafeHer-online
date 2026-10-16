@@ -88,6 +88,52 @@ describe('SafeHer database and public API', () => {
     const res = await POST(request('referrals', {}), context('referrals'));
     expect(res.status).toBe(403);
   });
+  it('records structured listing reports without changing or contacting the provider', async () => {
+    const entry = ghanaDirectorySources[0];
+    const category = `Service information · ${entry.name} [${entry.id}]`;
+    const before = await db.safeherService.findUniqueOrThrow({ where: { id: entry.id } });
+    try {
+      const res = await POST(
+        request('directory/report', { serviceId: entry.id, reason: 'Service unavailable' }),
+        context('directory/report'),
+      );
+      expect(res.status).toBe(202);
+      expect((await res.json()).data.recorded).toBe(true);
+      expect(
+        await db.safeherFeedback.findFirst({ where: { category, rating: 'Service unavailable' } }),
+      ).toBeTruthy();
+      const after = await db.safeherService.findUniqueOrThrow({ where: { id: entry.id } });
+      expect(after).toEqual(before);
+      const invalid = await POST(
+        request('directory/report', {
+          serviceId: entry.id,
+          reason: 'Service unavailable',
+          story: 'Do not collect this',
+        }),
+        context('directory/report'),
+      );
+      expect(invalid.status).toBe(400);
+      const missing = await POST(
+        request('directory/report', {
+          serviceId: 'missing-public-service',
+          reason: 'Service unavailable',
+        }),
+        context('directory/report'),
+      );
+      expect(missing.status).toBe(404);
+      const crossOrigin = await POST(
+        request(
+          'directory/report',
+          { serviceId: entry.id, reason: 'Service unavailable' },
+          'https://invalid.example',
+        ),
+        context('directory/report'),
+      );
+      expect(crossOrigin.status).toBe(403);
+    } finally {
+      await db.safeherFeedback.deleteMany({ where: { category, rating: 'Service unavailable' } });
+    }
+  });
   it('excludes synthetic entries from the public directory', async () => {
     const res = await GET(
       new Request('http://localhost/api/safeher/directory'),

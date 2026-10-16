@@ -20,6 +20,7 @@ test('real Ghanaian contacts are traceable and require a deliberate contact choi
     has: page.getByRole('heading', { name: 'MSI Reproductive Choices Ghana', exact: true }),
   });
   await expect(msi.getByText('PUBLIC CONTACT DETAILS CHECKED', { exact: true })).toBeVisible();
+  await msi.getByText('Eligibility, hours, accessibility & sources', { exact: true }).click();
   await expect(msi.getByRole('link', { name: /View the published source/ })).toHaveAttribute(
     'href',
     'https://mariestopes.org.gh/contact-us/',
@@ -37,7 +38,7 @@ test('real Ghanaian contacts are traceable and require a deliberate contact choi
     'href',
     'https://mariestopes.org.gh/contact-us/',
   );
-  await expect(page.getByRole('status')).toContainText('Nothing has been sent by SafeHer');
+  await expect(msi.getByRole('status')).toContainText('Nothing has been sent by SafeHer');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])

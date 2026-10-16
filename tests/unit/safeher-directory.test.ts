@@ -82,4 +82,36 @@ describe('Public-source Ghana directory', () => {
       filterDirectory([...ghanaDirectorySources, fake], { ...filters, includeExamples: true }, now),
     ).toHaveLength(6);
   });
+  it('combines support starting points with region, category and access filters', () => {
+    expect(
+      filterDirectory(ghanaDirectorySources, { ...filters, startingPoint: 'health' }, now),
+    ).toHaveLength(2);
+    expect(
+      filterDirectory(
+        ghanaDirectorySources,
+        { ...filters, startingPoint: 'safety', region: 'Ashanti' },
+        now,
+      ).map((entry) => entry.id),
+    ).toEqual(['safeher-gh-dovvsu', 'safeher-gh-helpline-of-hope']);
+    expect(
+      filterDirectory(ghanaDirectorySources, { ...filters, startingPoint: 'legal' }, now).map(
+        (entry) => entry.id,
+      ),
+    ).toEqual(['safeher-gh-legal-aid']);
+    expect(
+      filterDirectory(ghanaDirectorySources, { ...filters, startingPoint: 'online' }, now).map(
+        (entry) => entry.id,
+      ),
+    ).toEqual(['safeher-gh-csa']);
+    expect(
+      filterDirectory(
+        ghanaDirectorySources,
+        { ...filters, startingPoint: 'legal', access: 'In person' },
+        now,
+      ),
+    ).toEqual([]);
+    expect(
+      filterDirectory(ghanaDirectorySources, { ...filters, startingPoint: 'invalid' }, now),
+    ).toEqual([]);
+  });
 });
